@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="ir.homelinks.homelinks">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+            android:name=".utility.AppController"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
+        <activity android:name=".ui.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.LinkListActivity">
+        </activity>
+        <activity android:name=".ui.LinkDetailActivity">
+        </activity>
+        <activity android:name=".ui.SignInActivity">
+        </activity>
+        <activity android:name=".ui.SignUpActivity">
+        </activity>
+        <activity android:name=".ui.WebsiteCreateOrUpdateActivity">
+        </activity>
+        <activity android:name=".ui.ChannelCreateOrUpdateActivity">
+        </activity>
+        <activity android:name=".ui.GroupCreateOrUpdateActivity">
+        </activity>
+        <activity android:name=".ui.InstagramCreateOrUpdateActivity">
+        </activity>
+        <activity android:name=".ui.CategoryListActivity">
+        </activity>
+        <activity android:name=".ui.CategorizedItemsActivity">
+        </activity>
+        <activity android:name=".ui.ReportLinkActivity">
+        </activity>
+        <activity android:name=".ui.ContactUsActivity">
+        </activity>
+        <activity android:name=".ui.UpdateUserActivity">
+        </activity>
+        <activity android:name=".ui.UserChangePassword">
+        </activity>
+        <activity android:name=".ui.ResetPasswordActivity">
+        </activity>
+        <activity android:name=".ui.TaggedItemsActivity">
+        </activity>
+        <activity android:name=".ui.SearchLinksActivity">
+        </activity>
+        <activity android:name=".ui.UsersLinksActivity">
+        </activity>
+        <activity android:name=".ui.IndexActivity">
+        </activity>
+        <activity android:name=".ui.AboutUsActivity">
+        </activity>
+        <activity android:name=".ui.SettingsActivity">
+        </activity>
+        <activity android:name=".ui.CreateLinkActivity">
+        </activity>
+        <activity android:name=".ui.AddLinkActivity">
+        </activity>
+    </application>
+
+</manifest>

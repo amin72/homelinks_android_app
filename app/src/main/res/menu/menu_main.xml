@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title="@string/dashboard"
+        android:id="@+id/dashboard"/>
+
+    <item
+            android:title="@string/about_us"
+            android:id="@+id/about_us"/>
+
+    <item
+            android:title="@string/add_new_link"
+            android:id="@+id/add_new_link"/>
+
+    <item
+            android:title="@string/become_premium_user"
+            android:id="@+id/become_premium_user"/>
+
+    <item
+            android:title="@string/search"
+            android:id="@+id/search"/>
+
+    <item
+            android:title="@string/bookmarks"
+            android:id="@+id/bookmarks"/>
+
+    <item
+            android:title="@string/settings"
+            android:id="@+id/settings"/>
+
+</menu>
