@@ -18,8 +18,6 @@ import retrofit2.http.*
 
 interface APIInterface {
 
-    //D/---------Fail: Use JsonReader.setLenient(true)
-    // to accept malformed JSON at line 4 column 1 path $
     @GET(".")
     fun index(): Call<IndexResult>
 
@@ -206,13 +204,6 @@ interface APIInterface {
     fun contactUsChoices(): Call<ContactUsOptions>
 
 
-    @PUT("dashboard/user_update/")
-    fun userUpdate(
-        @Header("Authorization") token: String,
-        @Body user: UserModel
-    ): Call<UserModel>
-
-
     @POST("auth/password/change/")
     fun userChangePassword(
         @Header("Authorization") token: String,
@@ -238,10 +229,26 @@ interface APIInterface {
     ): Call<PaginatedResponseModel>
 
 
+
+    // Dashboard
+    @GET("dashboard/")
+    fun dashboard(
+        @Header("Authorization") token: String,
+        @Query("page") page: Int = 1
+    ): Call<LinkResults>
+
+
+    @PUT("dashboard/user_update/")
+    fun userUpdate(
+        @Header("Authorization") token: String,
+        @Body user: UserModel
+    ): Call<UserModel>
+
+
     @GET("dashboard/users_{link}/")
     fun getUsersLinks(
         @Header("Authorization") token: String,
         @Path("link") link: String,
         @Query("page") page: Int = 1
-    ): Call <PaginatedResponseModel>
+    ): Call <LinkResults>
 }

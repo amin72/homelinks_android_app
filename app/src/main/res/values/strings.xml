@@ -79,6 +79,7 @@
     <string name="load_more_channels">Load more Channels</string>
     <string name="load_more_groups">Load more Groups</string>
     <string name="load_more_instagrams">Load more Instagrams</string>
+    <string name="all">All</string>
 
 
     <!-- Channel Applications Spinner -->
@@ -118,5 +119,8 @@
         <item>@string/group</item>
         <item>@string/instagram</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

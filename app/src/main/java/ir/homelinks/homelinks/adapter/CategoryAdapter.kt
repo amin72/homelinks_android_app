@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.CategoryModel
-import ir.homelinks.homelinks.ui.CategorizedItemsActivity
+import ir.homelinks.homelinks.ui.activity.CategorizedItemsActivity
 import kotlinx.android.synthetic.main.category_list_row.view.*
 
 

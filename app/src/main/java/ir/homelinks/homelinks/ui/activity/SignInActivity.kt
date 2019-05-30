@@ -1,52 +1,44 @@
-package ir.homelinks.homelinks.ui
+package ir.homelinks.homelinks.ui.activity
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
-import android.text.Editable
-import android.text.TextWatcher
 import android.widget.Toast
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.TokenModel
 import ir.homelinks.homelinks.model.UserModel
 import ir.homelinks.homelinks.utility.AppController
+import ir.homelinks.homelinks.utility.AppPreferenceTools
 import ir.homelinks.homelinks.utility.Messages
-import kotlinx.android.synthetic.main.activity_sign_up.*
+import kotlinx.android.synthetic.main.activity_sign_in.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 
-class SignUpActivity : AppCompatActivity(), TextWatcher {
+class SignInActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_up)
+        setContentView(R.layout.activity_sign_in)
 
-        setSupportActionBar(sign_up_toolbar)
-        sign_up_layout.setOnClickListener(null)
+        setSupportActionBar(sign_in_toolbar)
 
-        sign_up_button.setOnClickListener {
+        login_layout.setOnClickListener(null)
+
+        login_button.setOnClickListener {
 
             val username = username_text.text.toString()
-            val email = email_text.text.toString()
             val password = password_text.text.toString()
 
-            if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
-
+            if (username.isEmpty() || password.isEmpty()) {
                 if (username.isEmpty()) {
+
                     val message = getString(R.string.username_cant_be_blank)
                     getFieldMessage(username_input_layout, message)
                 } else {
                     username_input_layout.isErrorEnabled = false
-                }
-
-                if (email.isEmpty()) {
-                    val message = getString(R.string.email_cant_be_blank)
-                    getFieldMessage(email_input_layout, message)
-                } else {
-                    email_input_layout.isErrorEnabled = false
                 }
 
                 if (password.isEmpty()) {
@@ -58,11 +50,11 @@ class SignUpActivity : AppCompatActivity(), TextWatcher {
 
             } else {
 
-                val user = UserModel(username, password, email)
-                val call = AppController.apiInterface.register(user)
+                val user = UserModel(username, password)
+                val call = AppController.apiInterface.login(user)
 
-                call.enqueue(object : Callback<UserModel> {
-                    override fun onFailure(call: Call<UserModel>, t: Throwable) {
+                call.enqueue(object : Callback<TokenModel> {
+                    override fun onFailure(call: Call<TokenModel>, t: Throwable) {
                         // show a dialog instead of toast
                         Toast.makeText(
                             baseContext,
@@ -72,36 +64,31 @@ class SignUpActivity : AppCompatActivity(), TextWatcher {
                     }
 
                     override fun onResponse(
-                        call: Call<UserModel>,
-                        response: Response<UserModel>
+                        call: Call<TokenModel>,
+                        response: Response<TokenModel>
                     ) {
 
                         if (response.isSuccessful) {
                             username_input_layout.isErrorEnabled = false
                             password_input_layout.isErrorEnabled = false
 
-                            val user = response.body()!!
-                            Toast.makeText(baseContext, user.username, Toast.LENGTH_SHORT).show()
-                            Toast.makeText(baseContext, user.email, Toast.LENGTH_SHORT).show()
+                            val token = response.body()!!
+
+                            // Save token in shared preference tools
+                            var appPreference = AppPreferenceTools(baseContext)
+                            appPreference.saveUserToken(token)
+                            startActivity(Intent(baseContext, MainActivity::class.java))
 
                         } else {
 
-                            val errors = Messages.getErrors(
-                                response, listOf(
-                                    "username", "password",
-                                    "email", "non_field_errors"
-                                )
-                            )
+                            val errors = Messages.getErrors(response, listOf("username", "password", "non_field_errors"))
 
                             var usernameErrorMessage = ""
-                            var emailErrorMessage = ""
                             var passwordErrorMessage = ""
 
                             for (error in errors) {
                                 if (error.key == "username") {
                                     usernameErrorMessage += error.value.joinToString("\n")
-                                } else if (error.key == "email") {
-                                    emailErrorMessage += error.value.joinToString("\n")
                                 } else if (error.key == "password" || error.key == "non_field_errors") {
                                     passwordErrorMessage += error.value.joinToString("\n")
                                 } else {
@@ -114,9 +101,6 @@ class SignUpActivity : AppCompatActivity(), TextWatcher {
                             username_input_layout.isErrorEnabled = true
                             username_input_layout.error = usernameErrorMessage
 
-                            email_input_layout.isErrorEnabled = true
-                            email_input_layout.error = emailErrorMessage
-
                             password_input_layout.isErrorEnabled = true
                             password_input_layout.error = passwordErrorMessage
                         }
@@ -125,36 +109,14 @@ class SignUpActivity : AppCompatActivity(), TextWatcher {
             }
         }
 
-        sign_in.setOnClickListener {
-            // back to sign in activity
-            finish()
+
+        get_help_sign_in.setOnClickListener {
+            startActivity(Intent(this, ResetPasswordActivity::class.java))
         }
 
-        username_text.addTextChangedListener(this)
-        email_text.addTextChangedListener(this)
-        password_text.addTextChangedListener(this)
-    }
 
-
-    override fun afterTextChanged(s: Editable?) {
-    }
-
-
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-    }
-
-
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        if (username_text.text.isNotEmpty()) {
-            username_input_layout.isErrorEnabled = false
-        }
-
-        if (email_text.text.isNotEmpty()) {
-            email_input_layout.isErrorEnabled = false
-        }
-
-        if (password_text.text.isNotEmpty()) {
-            password_input_layout.isErrorEnabled = false
+        sign_up.setOnClickListener {
+            startActivity(Intent(this, SignUpActivity::class.java))
         }
     }
 

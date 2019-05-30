@@ -2,19 +2,16 @@ package ir.homelinks.homelinks.adapter
 
 import android.content.Context
 import android.content.Intent
-import android.support.v4.widget.TextViewCompat
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
-import android.widget.Toast
 import com.squareup.picasso.Picasso
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.LinkModel
-import ir.homelinks.homelinks.ui.LinkDetailActivity
+import ir.homelinks.homelinks.ui.activity.LinkDetailActivity
 import ir.homelinks.homelinks.utility.ClientConstants
 import kotlinx.android.synthetic.main.link_list_row.view.*
 

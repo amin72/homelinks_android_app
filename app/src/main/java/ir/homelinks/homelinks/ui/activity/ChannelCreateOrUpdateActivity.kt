@@ -1,17 +1,16 @@
-package ir.homelinks.homelinks.ui
+package ir.homelinks.homelinks.ui.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.CategoryModel
-import ir.homelinks.homelinks.model.website.WebsiteModel
+import ir.homelinks.homelinks.model.channel.ChannelModel
 import ir.homelinks.homelinks.utility.AppController
 import ir.homelinks.homelinks.utility.ClientConstants
 import ir.homelinks.homelinks.utility.LinkUtility
-import kotlinx.android.synthetic.main.activity_create_or_update_website.*
+import kotlinx.android.synthetic.main.activity_create_or_update_channel.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -21,28 +20,28 @@ import retrofit2.Response
 import java.io.File
 
 
-class WebsiteCreateOrUpdateActivity : AppCompatActivity() {
+class ChannelCreateOrUpdateActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create_or_update_website)
+        setContentView(R.layout.activity_create_or_update_channel)
 
-        setSupportActionBar(create_website_toolbar)
-        create_website_layout.setOnClickListener(null)
+        setSupportActionBar(create_channel_toolbar)
+        create_channel_layout.setOnClickListener(null)
 
         // if slug is provided do update,
-        // else create website
+        // else create channel
         var slug = ""
 
-        val websiteTypesAdapter = ArrayAdapter.createFromResource(
+        val channelApplicationsAdapter = ArrayAdapter.createFromResource(
             this,
-            R.array.website_types,
+            R.array.channel_applications,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specify the layout to use when the list of choices appears
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             // Apply the adapter to the spinner
-            type_spinner.adapter = adapter
+            application_spinner.adapter = adapter
         }
 
 
@@ -78,38 +77,39 @@ class WebsiteCreateOrUpdateActivity : AppCompatActivity() {
                     val extras = intent.extras
                     if (extras != null) {
 
-                        // Going to update website
+                        // Going to update channel
 
                         slug = extras.getString("slug", "")
                         if (slug.isNotEmpty()) {
-                            // get website detail
-                            val callWebsiteDetail = AppController.apiInterface.websiteDetail(slug)
 
-                            callWebsiteDetail.enqueue(object: Callback<WebsiteModel> {
-                                override fun onFailure(call: Call<WebsiteModel>, t: Throwable) {
+                            // get channel detail
+                            //val callChannelDetail = AppController.apiInterface.linkDetail("channel", slug)
+                            val callChannelDetail = AppController.apiInterface.channelDetail(slug)
+
+                            callChannelDetail.enqueue(object: Callback<ChannelModel> {
+                                override fun onFailure(call: Call<ChannelModel>, t: Throwable) {
                                     Toast.makeText(baseContext, getString(R.string.failed_to_connect_to_server).toString(),
                                         Toast.LENGTH_SHORT).show()
-                                    Log.d("--------", t.message)
                                 }
 
-                                override fun onResponse(call: Call<WebsiteModel>, response: Response<WebsiteModel>) {
+                                override fun onResponse(call: Call<ChannelModel>, response: Response<ChannelModel>) {
                                     if (response.isSuccessful) {
-                                        val website = response.body()!!
+                                        val channel = response.body()!!
 
-                                        title_text.setText(website.title)
-                                        url_text.setText(website.url)
-                                        description_text.setText(website.description)
+                                        title_text.setText(channel.title)
+                                        channel_id_text.setText(channel.channelId)
+                                        description_text.setText(channel.description)
 
-                                        val category = LinkUtility.findCategoryById(categories!!, website.category)
-                                        val websiteCategoryPosition = categoryAdapter.getPosition(category)
-                                        category_spinner.setSelection(websiteCategoryPosition)
+                                        val category = LinkUtility.findCategoryById(categories!!, channel.category)
+                                        val channelCategoryPosition = categoryAdapter.getPosition(category)
+                                        category_spinner.setSelection(channelCategoryPosition)
 
-                                        val websiteType = website.type.capitalize()
-                                        val websiteTypePosition = websiteTypesAdapter.getPosition(websiteType)
-                                        type_spinner.setSelection(websiteTypePosition)
+                                        val channelApplication = channel.application.capitalize()
+                                        val channelApplicationPosition = channelApplicationsAdapter.getPosition(channelApplication)
+                                        application_spinner.setSelection(channelApplicationPosition)
 
                                     } else {
-                                        Toast.makeText(baseContext, "Unable to fetch website detail",
+                                        Toast.makeText(baseContext, "Unable to fetch channel detail",
                                             Toast.LENGTH_SHORT).show()
                                     }
                                 }
@@ -119,20 +119,19 @@ class WebsiteCreateOrUpdateActivity : AppCompatActivity() {
 
 
                     // Send create/update request
-                    submit_website_button.setOnClickListener {
+                    submit_channel_button.setOnClickListener {
 
                         val token = "token ${ClientConstants.TOKEN}"
+                        val application = application_spinner.selectedItem.toString().toLowerCase()
                         val title = title_text.text.toString()
-                        val url = url_text.text.toString()
-                        val type = type_spinner.selectedItem.toString().toLowerCase()
+                        val channelId = channel_id_text.text.toString().toLowerCase()
                         val category = category_spinner.selectedItem
                         val categoryId = (category as CategoryModel).id
                         val description = description_text.text.toString()
 
-
+                        val applicationReqBody = RequestBody.create(okhttp3.MultipartBody.FORM, application)
                         val titleReqBody = RequestBody.create(okhttp3.MultipartBody.FORM, title)
-                        val urlReqBody = RequestBody.create(okhttp3.MultipartBody.FORM, url)
-                        val typeReqBody = RequestBody.create(okhttp3.MultipartBody.FORM, type)
+                        val channelIdReqBody = RequestBody.create(okhttp3.MultipartBody.FORM, channelId)
                         val categoryReqBody = RequestBody.create(okhttp3.MultipartBody.FORM, categoryId.toString())
                         val descriptionReqBody = RequestBody.create(okhttp3.MultipartBody.FORM, description)
 
@@ -146,12 +145,14 @@ class WebsiteCreateOrUpdateActivity : AppCompatActivity() {
 
                         if (slug.isNotEmpty()) {
                             // Make update request
-                            updateWebsite(token, slug, titleReqBody, urlReqBody, typeReqBody,
+                            updateChannel(token, slug, applicationReqBody, titleReqBody, channelIdReqBody,
                                 categoryReqBody, descriptionReqBody, image)
+                            Toast.makeText(baseContext, "Update!", Toast.LENGTH_SHORT).show()
                         } else {
                             // Make create request
-                            createWebsite(token, titleReqBody, urlReqBody, typeReqBody,
+                            createChannel(token, applicationReqBody, titleReqBody, channelIdReqBody,
                                 categoryReqBody, descriptionReqBody, image)
+                            Toast.makeText(baseContext, "Create!", Toast.LENGTH_SHORT).show()
                         }
                     }
 
@@ -163,60 +164,61 @@ class WebsiteCreateOrUpdateActivity : AppCompatActivity() {
     }
 
 
-    private fun updateWebsite(token: String, slug: String, titleReqBody: RequestBody, urlReqBody: RequestBody,
-                              typeReqBody: RequestBody, categoryReqBody: RequestBody,
-                              descriptionReqBody: RequestBody, image: MultipartBody.Part) {
+    private fun updateChannel(token: String, slug: String, applicationReqBody: RequestBody? = null,
+                              titleReqBody: RequestBody? = null, channelIdReqBody: RequestBody? = null,
+                              categoryReqBody: RequestBody? = null, descriptionReqBody: RequestBody? = null,
+                              image: MultipartBody.Part? = null) {
 
-        val callUpdateWebsite = AppController.apiInterface.updateWebsite(token, slug, titleReqBody,
-            urlReqBody, typeReqBody, categoryReqBody, descriptionReqBody, image)
+        val callUpdateChannel = AppController.apiInterface.updateChannel(token, slug, applicationReqBody,
+            titleReqBody, channelIdReqBody, categoryReqBody, descriptionReqBody, image)
 
-        callUpdateWebsite.enqueue(object : Callback<WebsiteModel> {
-            override fun onFailure(call: Call<WebsiteModel>, t: Throwable) {
+        callUpdateChannel.enqueue(object : Callback<ChannelModel> {
+            override fun onFailure(call: Call<ChannelModel>, t: Throwable) {
                 Toast.makeText(baseContext, getString(R.string.failed_to_connect_to_server).toString(),
                     Toast.LENGTH_SHORT).show()
             }
 
             override fun onResponse(
-                call: Call<WebsiteModel>,
-                response: Response<WebsiteModel>
+                call: Call<ChannelModel>,
+                response: Response<ChannelModel>
             ) {
 
                 if (response.isSuccessful) {
-                    val website = response.body()!!
-                    Toast.makeText(baseContext, website.title, Toast.LENGTH_SHORT).show()
-                    Toast.makeText(baseContext, website.description, Toast.LENGTH_SHORT).show()
+                    val channel = response.body()!!
+                    Toast.makeText(baseContext, channel.title, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, channel.description, Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(baseContext, "Failed to update website!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, "Failed to update channel!", Toast.LENGTH_SHORT).show()
                 }
             }
         })
     }
 
 
-    private fun createWebsite(token: String, titleReqBody: RequestBody, urlReqBody: RequestBody,
-                              typeReqBody: RequestBody, categoryReqBody: RequestBody,
+    private fun createChannel(token: String, applicationReqBody: RequestBody, titleReqBody: RequestBody,
+                              channelIdReqBody: RequestBody, categoryReqBody: RequestBody,
                               descriptionReqBody: RequestBody, image: MultipartBody.Part) {
 
-        val callCreateWebsite = AppController.apiInterface.createWebsite(token, titleReqBody,
-            urlReqBody, typeReqBody, categoryReqBody, descriptionReqBody, image)
+        val callCreateChannel = AppController.apiInterface.createChannel(token, applicationReqBody,
+            titleReqBody, channelIdReqBody, categoryReqBody, descriptionReqBody, image)
 
-        callCreateWebsite.enqueue(object : Callback<WebsiteModel> {
-            override fun onFailure(call: Call<WebsiteModel>, t: Throwable) {
+        callCreateChannel.enqueue(object : Callback<ChannelModel> {
+            override fun onFailure(call: Call<ChannelModel>, t: Throwable) {
                 Toast.makeText(baseContext, getString(R.string.failed_to_connect_to_server).toString(),
                     Toast.LENGTH_SHORT).show()
             }
 
             override fun onResponse(
-                call: Call<WebsiteModel>,
-                response: Response<WebsiteModel>
+                call: Call<ChannelModel>,
+                response: Response<ChannelModel>
             ) {
 
                 if (response.isSuccessful) {
-                    val website = response.body()!!
-                    Toast.makeText(baseContext, website.title, Toast.LENGTH_SHORT).show()
-                    Toast.makeText(baseContext, website.description, Toast.LENGTH_SHORT).show()
+                    val channel = response.body()!!
+                    Toast.makeText(baseContext, channel.title, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, channel.description, Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(baseContext, "Failed to create website!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, "Failed to create channel!", Toast.LENGTH_SHORT).show()
                 }
             }
         })

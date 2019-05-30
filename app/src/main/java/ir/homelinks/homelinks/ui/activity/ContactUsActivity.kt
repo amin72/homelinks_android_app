@@ -1,15 +1,13 @@
-package ir.homelinks.homelinks.ui
+package ir.homelinks.homelinks.ui.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.ChoiceModel
 import ir.homelinks.homelinks.model.contact_us.ContactUsModel
 import ir.homelinks.homelinks.model.contact_us.ContactUsOptions
-import ir.homelinks.homelinks.model.report_links.ReportLinkOptions
 import ir.homelinks.homelinks.utility.AppController
 import kotlinx.android.synthetic.main.activity_contact_us.*
 import retrofit2.Call

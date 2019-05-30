@@ -1,10 +1,9 @@
-package ir.homelinks.homelinks.ui
+package ir.homelinks.homelinks.ui.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.widget.Toast
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.adapter.LinkAdapter
@@ -16,7 +15,6 @@ import kotlinx.android.synthetic.main.activity_tagged_items.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.regex.Pattern
 
 
 class TaggedItemsActivity : AppCompatActivity() {

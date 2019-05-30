@@ -1,8 +1,7 @@
-package ir.homelinks.homelinks.ui
+package ir.homelinks.homelinks.ui.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import ir.homelinks.homelinks.R
@@ -11,7 +10,6 @@ import ir.homelinks.homelinks.model.report_links.ReportLinkModel
 import ir.homelinks.homelinks.model.report_links.ReportLinkOptions
 import ir.homelinks.homelinks.utility.AppController
 import kotlinx.android.synthetic.main.activity_report_link.*
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

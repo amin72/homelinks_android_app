@@ -1,4 +1,4 @@
-package ir.homelinks.homelinks.ui
+package ir.homelinks.homelinks.ui.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -56,8 +56,8 @@ class UsersLinksActivity : AppCompatActivity() {
 
         val call = AppController.apiInterface.getUsersLinks(token, link, page)
 
-        call.enqueue(object : Callback<PaginatedResponseModel> {
-            override fun onFailure(call: Call<PaginatedResponseModel>, t: Throwable) {
+        call.enqueue(object : Callback<LinkResults> {
+            override fun onFailure(call: Call<LinkResults>, t: Throwable) {
                 Toast.makeText(
                     baseContext,
                     getString(R.string.failed_to_connect_to_server).toString(),
@@ -67,8 +67,8 @@ class UsersLinksActivity : AppCompatActivity() {
 
 
             override fun onResponse(
-                call: Call<PaginatedResponseModel>,
-                response: Response<PaginatedResponseModel>
+                call: Call<LinkResults>,
+                response: Response<LinkResults>
             ) {
 
                 if (response.isSuccessful) {

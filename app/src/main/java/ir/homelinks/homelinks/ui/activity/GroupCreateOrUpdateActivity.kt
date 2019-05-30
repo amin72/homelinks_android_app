@@ -1,4 +1,4 @@
-package ir.homelinks.homelinks.ui
+package ir.homelinks.homelinks.ui.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -6,11 +6,11 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.CategoryModel
-import ir.homelinks.homelinks.model.channel.ChannelModel
+import ir.homelinks.homelinks.model.group.GroupModel
 import ir.homelinks.homelinks.utility.AppController
 import ir.homelinks.homelinks.utility.ClientConstants
 import ir.homelinks.homelinks.utility.LinkUtility
-import kotlinx.android.synthetic.main.activity_create_or_update_channel.*
+import kotlinx.android.synthetic.main.activity_create_or_update_group.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -20,22 +20,22 @@ import retrofit2.Response
 import java.io.File
 
 
-class ChannelCreateOrUpdateActivity : AppCompatActivity() {
+class GroupCreateOrUpdateActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create_or_update_channel)
+        setContentView(R.layout.activity_create_or_update_group)
 
-        setSupportActionBar(create_channel_toolbar)
-        create_channel_layout.setOnClickListener(null)
+        setSupportActionBar(create_group_toolbar)
+        create_group_layout.setOnClickListener(null)
 
         // if slug is provided do update,
-        // else create channel
+        // else create group
         var slug = ""
 
-        val channelApplicationsAdapter = ArrayAdapter.createFromResource(
+        val groupApplicationsAdapter = ArrayAdapter.createFromResource(
             this,
-            R.array.channel_applications,
+            R.array.group_applications,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specify the layout to use when the list of choices appears
@@ -77,39 +77,38 @@ class ChannelCreateOrUpdateActivity : AppCompatActivity() {
                     val extras = intent.extras
                     if (extras != null) {
 
-                        // Going to update channel
+                        // Going to update group
 
                         slug = extras.getString("slug", "")
                         if (slug.isNotEmpty()) {
 
-                            // get channel detail
-                            //val callChannelDetail = AppController.apiInterface.linkDetail("channel", slug)
-                            val callChannelDetail = AppController.apiInterface.channelDetail(slug)
+                            // get group detail
+                            val callGroupDetail = AppController.apiInterface.groupDetail(slug)
 
-                            callChannelDetail.enqueue(object: Callback<ChannelModel> {
-                                override fun onFailure(call: Call<ChannelModel>, t: Throwable) {
+                            callGroupDetail.enqueue(object: Callback<GroupModel> {
+                                override fun onFailure(call: Call<GroupModel>, t: Throwable) {
                                     Toast.makeText(baseContext, getString(R.string.failed_to_connect_to_server).toString(),
                                         Toast.LENGTH_SHORT).show()
                                 }
 
-                                override fun onResponse(call: Call<ChannelModel>, response: Response<ChannelModel>) {
+                                override fun onResponse(call: Call<GroupModel>, response: Response<GroupModel>) {
                                     if (response.isSuccessful) {
-                                        val channel = response.body()!!
+                                        val group = response.body()!!
 
-                                        title_text.setText(channel.title)
-                                        channel_id_text.setText(channel.channelId)
-                                        description_text.setText(channel.description)
+                                        title_text.setText(group.title)
+                                        url_text.setText(group.url)
+                                        description_text.setText(group.description)
 
-                                        val category = LinkUtility.findCategoryById(categories!!, channel.category)
-                                        val channelCategoryPosition = categoryAdapter.getPosition(category)
-                                        category_spinner.setSelection(channelCategoryPosition)
+                                        val category = LinkUtility.findCategoryById(categories!!, group.category)
+                                        val groupCategoryPosition = categoryAdapter.getPosition(category)
+                                        category_spinner.setSelection(groupCategoryPosition)
 
-                                        val channelApplication = channel.application.capitalize()
-                                        val channelApplicationPosition = channelApplicationsAdapter.getPosition(channelApplication)
-                                        application_spinner.setSelection(channelApplicationPosition)
+                                        val groupApplication = group.application.capitalize()
+                                        val groupApplicationPosition = groupApplicationsAdapter.getPosition(groupApplication)
+                                        application_spinner.setSelection(groupApplicationPosition)
 
                                     } else {
-                                        Toast.makeText(baseContext, "Unable to fetch channel detail",
+                                        Toast.makeText(baseContext, "Unable to fetch group detail",
                                             Toast.LENGTH_SHORT).show()
                                     }
                                 }
@@ -119,19 +118,19 @@ class ChannelCreateOrUpdateActivity : AppCompatActivity() {
 
 
                     // Send create/update request
-                    submit_channel_button.setOnClickListener {
+                    submit_group_button.setOnClickListener {
 
                         val token = "token ${ClientConstants.TOKEN}"
                         val application = application_spinner.selectedItem.toString().toLowerCase()
                         val title = title_text.text.toString()
-                        val channelId = channel_id_text.text.toString().toLowerCase()
+                        val url = url_text.text.toString().toLowerCase()
                         val category = category_spinner.selectedItem
                         val categoryId = (category as CategoryModel).id
                         val description = description_text.text.toString()
 
                         val applicationReqBody = RequestBody.create(okhttp3.MultipartBody.FORM, application)
                         val titleReqBody = RequestBody.create(okhttp3.MultipartBody.FORM, title)
-                        val channelIdReqBody = RequestBody.create(okhttp3.MultipartBody.FORM, channelId)
+                        val urlReqBody = RequestBody.create(okhttp3.MultipartBody.FORM, url)
                         val categoryReqBody = RequestBody.create(okhttp3.MultipartBody.FORM, categoryId.toString())
                         val descriptionReqBody = RequestBody.create(okhttp3.MultipartBody.FORM, description)
 
@@ -145,12 +144,12 @@ class ChannelCreateOrUpdateActivity : AppCompatActivity() {
 
                         if (slug.isNotEmpty()) {
                             // Make update request
-                            updateChannel(token, slug, applicationReqBody, titleReqBody, channelIdReqBody,
+                            updateGroup(token, slug, applicationReqBody, titleReqBody, urlReqBody,
                                 categoryReqBody, descriptionReqBody, image)
                             Toast.makeText(baseContext, "Update!", Toast.LENGTH_SHORT).show()
                         } else {
                             // Make create request
-                            createChannel(token, applicationReqBody, titleReqBody, channelIdReqBody,
+                            createGroup(token, applicationReqBody, titleReqBody, urlReqBody,
                                 categoryReqBody, descriptionReqBody, image)
                             Toast.makeText(baseContext, "Create!", Toast.LENGTH_SHORT).show()
                         }
@@ -164,61 +163,59 @@ class ChannelCreateOrUpdateActivity : AppCompatActivity() {
     }
 
 
-    private fun updateChannel(token: String, slug: String, applicationReqBody: RequestBody? = null,
-                              titleReqBody: RequestBody? = null, channelIdReqBody: RequestBody? = null,
-                              categoryReqBody: RequestBody? = null, descriptionReqBody: RequestBody? = null,
-                              image: MultipartBody.Part? = null) {
+    private fun updateGroup(token: String, slug: String, applicationReqBody: RequestBody,
+                              titleReqBody: RequestBody, urlReqBody: RequestBody,
+                              categoryReqBody: RequestBody, descriptionReqBody: RequestBody,
+                              image: MultipartBody.Part) {
 
-        val callUpdateChannel = AppController.apiInterface.updateChannel(token, slug, applicationReqBody,
-            titleReqBody, channelIdReqBody, categoryReqBody, descriptionReqBody, image)
+        val callUpdateGroup = AppController.apiInterface.updateGroup(token, slug, applicationReqBody,
+            titleReqBody, urlReqBody, categoryReqBody, descriptionReqBody, image)
 
-        callUpdateChannel.enqueue(object : Callback<ChannelModel> {
-            override fun onFailure(call: Call<ChannelModel>, t: Throwable) {
+        callUpdateGroup.enqueue(object : Callback<GroupModel> {
+            override fun onFailure(call: Call<GroupModel>, t: Throwable) {
                 Toast.makeText(baseContext, getString(R.string.failed_to_connect_to_server).toString(),
                     Toast.LENGTH_SHORT).show()
             }
 
-            override fun onResponse(
-                call: Call<ChannelModel>,
-                response: Response<ChannelModel>
+            override fun onResponse(call: Call<GroupModel>, response: Response<GroupModel>
             ) {
 
                 if (response.isSuccessful) {
-                    val channel = response.body()!!
-                    Toast.makeText(baseContext, channel.title, Toast.LENGTH_SHORT).show()
-                    Toast.makeText(baseContext, channel.description, Toast.LENGTH_SHORT).show()
+                    val group = response.body()!!
+                    Toast.makeText(baseContext, group.title, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, group.description, Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(baseContext, "Failed to update channel!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, "Failed to update group!", Toast.LENGTH_SHORT).show()
                 }
             }
         })
     }
 
 
-    private fun createChannel(token: String, applicationReqBody: RequestBody, titleReqBody: RequestBody,
-                              channelIdReqBody: RequestBody, categoryReqBody: RequestBody,
+    private fun createGroup(token: String, applicationReqBody: RequestBody, titleReqBody: RequestBody,
+                              urlReqBody: RequestBody, categoryReqBody: RequestBody,
                               descriptionReqBody: RequestBody, image: MultipartBody.Part) {
 
-        val callCreateChannel = AppController.apiInterface.createChannel(token, applicationReqBody,
-            titleReqBody, channelIdReqBody, categoryReqBody, descriptionReqBody, image)
+        val callCreateGroup = AppController.apiInterface.createGroup(token, applicationReqBody,
+            titleReqBody, urlReqBody, categoryReqBody, descriptionReqBody, image)
 
-        callCreateChannel.enqueue(object : Callback<ChannelModel> {
-            override fun onFailure(call: Call<ChannelModel>, t: Throwable) {
+        callCreateGroup.enqueue(object : Callback<GroupModel> {
+            override fun onFailure(call: Call<GroupModel>, t: Throwable) {
                 Toast.makeText(baseContext, getString(R.string.failed_to_connect_to_server).toString(),
                     Toast.LENGTH_SHORT).show()
             }
 
             override fun onResponse(
-                call: Call<ChannelModel>,
-                response: Response<ChannelModel>
+                call: Call<GroupModel>,
+                response: Response<GroupModel>
             ) {
 
                 if (response.isSuccessful) {
-                    val channel = response.body()!!
-                    Toast.makeText(baseContext, channel.title, Toast.LENGTH_SHORT).show()
-                    Toast.makeText(baseContext, channel.description, Toast.LENGTH_SHORT).show()
+                    val group = response.body()!!
+                    Toast.makeText(baseContext, group.title, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, group.description, Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(baseContext, "Failed to create channel!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, "Failed to create group!", Toast.LENGTH_SHORT).show()
                 }
             }
         })

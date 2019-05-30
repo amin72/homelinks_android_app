@@ -1,4 +1,4 @@
-package ir.homelinks.homelinks.ui
+package ir.homelinks.homelinks.ui.activity
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity

@@ -1,16 +1,16 @@
-package ir.homelinks.homelinks.ui
+package ir.homelinks.homelinks.ui.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import ir.homelinks.homelinks.R
 
-class SettingsActivity : AppCompatActivity() {
+class AboutUsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        setContentView(R.layout.activity_about_us)
 
-        Toast.makeText(baseContext, "Settings!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(baseContext, "About Us!", Toast.LENGTH_SHORT).show()
     }
 }

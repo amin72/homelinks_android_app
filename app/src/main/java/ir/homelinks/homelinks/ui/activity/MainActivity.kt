@@ -1,4 +1,4 @@
-package ir.homelinks.homelinks.ui
+package ir.homelinks.homelinks.ui.activity
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -11,7 +11,6 @@ import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.IndexResult
 import ir.homelinks.homelinks.utility.AppController
 import ir.homelinks.homelinks.utility.AppPreferenceTools
-import ir.homelinks.homelinks.utility.Roozh
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -125,7 +124,7 @@ class MainActivity : AppCompatActivity() {
         call.enqueue(object: Callback<IndexResult> {
             override fun onFailure(call: Call<IndexResult>, t: Throwable) {
                 Toast.makeText(baseContext, "Fail!", Toast.LENGTH_SHORT).show()
-                Log.d("---------Fail", t.message)
+                //Log.d("---------Fail", t.message)
             }
 
             override fun onResponse(call: Call<IndexResult>, response: Response<IndexResult>) {
@@ -142,7 +141,6 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-
         when (item?.itemId) {
             R.id.about_us -> {
                 startActivity(Intent(this, AboutUsActivity::class.java))
@@ -166,6 +164,10 @@ class MainActivity : AppCompatActivity() {
 
             R.id.become_premium_user -> {
                 Toast.makeText(baseContext, "Become a premium user", Toast.LENGTH_SHORT).show()
+            }
+
+            R.id.dashboard -> {
+                startActivity(Intent(this, DashboardActivity::class.java))
             }
         }
 

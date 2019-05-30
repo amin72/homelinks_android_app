@@ -1,4 +1,4 @@
-package ir.homelinks.homelinks.ui
+package ir.homelinks.homelinks.ui.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -9,7 +9,6 @@ import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.LinkModel
 import ir.homelinks.homelinks.utility.AppController
 import ir.homelinks.homelinks.utility.LinkUtility
-import ir.homelinks.homelinks.utility.Roozh
 import kotlinx.android.synthetic.main.activity_link_detail.*
 import retrofit2.Call
 import retrofit2.Callback

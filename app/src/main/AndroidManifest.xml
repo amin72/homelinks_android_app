@@ -12,58 +12,60 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.LinkListActivity">
+        <activity android:name=".ui.activity.LinkListActivity">
         </activity>
-        <activity android:name=".ui.LinkDetailActivity">
+        <activity android:name=".ui.activity.LinkDetailActivity">
         </activity>
-        <activity android:name=".ui.SignInActivity">
+        <activity android:name=".ui.activity.SignInActivity">
         </activity>
-        <activity android:name=".ui.SignUpActivity">
+        <activity android:name=".ui.activity.SignUpActivity">
         </activity>
-        <activity android:name=".ui.WebsiteCreateOrUpdateActivity">
+        <activity android:name=".ui.activity.WebsiteCreateOrUpdateActivity">
         </activity>
-        <activity android:name=".ui.ChannelCreateOrUpdateActivity">
+        <activity android:name=".ui.activity.ChannelCreateOrUpdateActivity">
         </activity>
-        <activity android:name=".ui.GroupCreateOrUpdateActivity">
+        <activity android:name=".ui.activity.GroupCreateOrUpdateActivity">
         </activity>
-        <activity android:name=".ui.InstagramCreateOrUpdateActivity">
+        <activity android:name=".ui.activity.InstagramCreateOrUpdateActivity">
         </activity>
-        <activity android:name=".ui.CategoryListActivity">
+        <activity android:name=".ui.activity.CategoryListActivity">
         </activity>
-        <activity android:name=".ui.CategorizedItemsActivity">
+        <activity android:name=".ui.activity.CategorizedItemsActivity">
         </activity>
-        <activity android:name=".ui.ReportLinkActivity">
+        <activity android:name=".ui.activity.ReportLinkActivity">
         </activity>
-        <activity android:name=".ui.ContactUsActivity">
+        <activity android:name=".ui.activity.ContactUsActivity">
         </activity>
-        <activity android:name=".ui.UpdateUserActivity">
+        <activity android:name=".ui.activity.UpdateUserActivity">
         </activity>
-        <activity android:name=".ui.UserChangePassword">
+        <activity android:name=".ui.activity.UserChangePassword">
         </activity>
-        <activity android:name=".ui.ResetPasswordActivity">
+        <activity android:name=".ui.activity.ResetPasswordActivity">
         </activity>
-        <activity android:name=".ui.TaggedItemsActivity">
+        <activity android:name=".ui.activity.TaggedItemsActivity">
         </activity>
-        <activity android:name=".ui.SearchLinksActivity">
+        <activity android:name=".ui.activity.SearchLinksActivity">
         </activity>
-        <activity android:name=".ui.UsersLinksActivity">
+        <activity android:name=".ui.activity.UsersLinksActivity">
         </activity>
         <activity android:name=".ui.IndexActivity">
         </activity>
-        <activity android:name=".ui.AboutUsActivity">
+        <activity android:name=".ui.activity.AboutUsActivity">
         </activity>
-        <activity android:name=".ui.SettingsActivity">
+        <activity android:name=".ui.activity.SettingsActivity">
         </activity>
         <activity android:name=".ui.CreateLinkActivity">
         </activity>
-        <activity android:name=".ui.AddLinkActivity">
+        <activity android:name=".ui.activity.AddLinkActivity">
+        </activity>
+        <activity android:name=".ui.activity.DashboardActivity">
         </activity>
     </application>
 
