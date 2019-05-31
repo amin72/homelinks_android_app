@@ -3,7 +3,6 @@ package ir.homelinks.homelinks.ui.activity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -39,27 +38,19 @@ class MainActivity : AppCompatActivity() {
 
 
         load_websites_button.setOnClickListener {
-            val websitesIntent = Intent(this, LinkListActivity::class.java)
-            websitesIntent.putExtra("link", "websites")
-            startActivity(websitesIntent)
+            startActivity(Intent(this, WebsiteListActivity::class.java))
         }
 
         load_channels_button.setOnClickListener {
-            val channelsIntent = Intent(this, LinkListActivity::class.java)
-            channelsIntent.putExtra("link", "channels")
-            startActivity(channelsIntent)
+            startActivity(Intent(this, ChannelListActivity::class.java))
         }
 
         load_groups_button.setOnClickListener {
-            val groupsIntent = Intent(this, LinkListActivity::class.java)
-            groupsIntent.putExtra("link", "groups")
-            startActivity(groupsIntent)
+            startActivity(Intent(this, GroupListActivity::class.java))
         }
 
         load_instagrams_button.setOnClickListener {
-            val instagramsIntent = Intent(this, LinkListActivity::class.java)
-            instagramsIntent.putExtra("link", "instagrams")
-            startActivity(instagramsIntent)
+            startActivity(Intent(this, InstagramListActivity::class.java))
         }
 
         //startActivity(Intent(this, LinkListActivity::class.java)) // +
@@ -135,39 +126,31 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.main_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.about_us -> {
-                startActivity(Intent(this, AboutUsActivity::class.java))
-            }
-
-            R.id.search -> {
-                Toast.makeText(baseContext, "Search", Toast.LENGTH_SHORT).show()
-            }
-
-            R.id.settings -> {
-                startActivity(Intent(this, SettingsActivity::class.java))
-            }
-
-            R.id.bookmarks -> {
-                Toast.makeText(baseContext, "Bookmarks", Toast.LENGTH_SHORT).show()
-            }
-
             R.id.add_new_link -> {
                 startActivity(Intent(this, AddLinkActivity::class.java))
             }
 
-            R.id.become_premium_user -> {
-                Toast.makeText(baseContext, "Become a premium user", Toast.LENGTH_SHORT).show()
-            }
-
             R.id.dashboard -> {
                 startActivity(Intent(this, DashboardActivity::class.java))
+            }
+
+            R.id.categories -> {
+                startActivity(Intent(this, CategoryListActivity::class.java))
+            }
+
+            R.id.contact_us -> {
+                startActivity(Intent(this, ContactUsActivity::class.java))
+            }
+
+            R.id.about_us -> {
+                startActivity(Intent(this, AboutUsActivity::class.java))
             }
         }
 

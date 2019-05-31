@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+            android:title=""
+            android:id="@+id/search"
+            android:icon="@drawable/ic_search_white_24dp"
+            app:showAsAction="collapseActionView|ifRoom"
+            app:actionViewClass="android.support.v7.widget.SearchView"/>
+
+    <item
+            android:title="@string/dashboard"
+            android:id="@+id/dashboard"/>
+
+    <item
+            android:title="@string/websites"
+            android:id="@+id/websites"/>
+
+    <item
+            android:title="@string/groups"
+            android:id="@+id/groups"/>
+
+    <item
+            android:title="@string/instagrams"
+            android:id="@+id/instagrams"/>
+
+
+    <item
+            android:title="@string/categories"
+            android:id="@+id/categories"/>
+
+    <item
+            android:title="@string/add_new_link"
+            android:id="@+id/add_new_link"/>
+
+    <item
+            android:title="@string/contact_us"
+            android:id="@+id/contact_us"/>
+
+    <item
+            android:title="@string/about_us"
+            android:id="@+id/about_us"/>
+</menu>

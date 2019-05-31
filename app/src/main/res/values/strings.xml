@@ -122,5 +122,10 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="my_channels">My Channels</string>
+    <string name="my_groups">My Groups</string>
+    <string name="my_instagrams">My Instagrams</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="categories">Categories</string>
 
 </resources>

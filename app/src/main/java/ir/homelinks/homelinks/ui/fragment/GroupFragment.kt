@@ -1,29 +1,31 @@
 package ir.homelinks.homelinks.ui.fragment
 
+
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.support.v7.widget.SearchView
+import android.view.*
 import android.widget.Toast
+
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.adapter.LinkAdapter
 import ir.homelinks.homelinks.model.LinkModel
 import ir.homelinks.homelinks.model.LinkResults
 import ir.homelinks.homelinks.utility.AppController
-import ir.homelinks.homelinks.utility.AppPreferenceTools
 import it.gmariotti.recyclerview.adapter.SlideInBottomAnimatorAdapter
-import kotlinx.android.synthetic.main.links_fragment.*
+import kotlinx.android.synthetic.main.fragment_group.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 
-class AllLinksFragment: Fragment() {
+private const val ARG_PARAM1 = "app"
 
-    private lateinit var appPreference: AppPreferenceTools
+
+class GroupFragment : Fragment() {
+    private var app: String? = null
     private lateinit var linkAdapter: LinkAdapter
     private var page = 1
     private var totalItems = 0
@@ -31,16 +33,36 @@ class AllLinksFragment: Fragment() {
     private var isLoading = false
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.links_fragment, container, false)
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
+            app = it.getString(ARG_PARAM1)
+        }
 
-        appPreference = AppPreferenceTools(context!!)
-        getLinks()
+        if (arguments != null) {
+            app = arguments!!.getString("app", "")
+            getLinks()
+        }
+    }
+
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?): View? {
+
+        setHasOptionsMenu(true)
+        return inflater.inflate(R.layout.fragment_group, container, false)
+    }
+
+
+    companion object {
+        @JvmStatic
+        fun newInstance(app: String) =
+            GroupFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_PARAM1, app)
+                }
+            }
     }
 
 
@@ -53,7 +75,8 @@ class AllLinksFragment: Fragment() {
         links_recycler_view.layoutManager = linearLayoutManager
         links_recycler_view.adapter = linkAdapter
 
-        val slideInBottomAnimatorAdapter = SlideInBottomAnimatorAdapter(linkAdapter, links_recycler_view)
+        val slideInBottomAnimatorAdapter =
+            SlideInBottomAnimatorAdapter(linkAdapter, links_recycler_view)
         links_recycler_view.adapter = slideInBottomAnimatorAdapter
 
         links_recycler_view.addOnScrollListener(object: RecyclerView.OnScrollListener() {
@@ -76,8 +99,7 @@ class AllLinksFragment: Fragment() {
 
 
     private fun getLinks() {
-        val token = "token ${appPreference.getUserToken()}"
-        val call = AppController.apiInterface.dashboard(token)
+        val call = AppController.apiInterface.links("groups", app=app)
 
         call.enqueue(object: Callback<LinkResults> {
 
@@ -86,16 +108,14 @@ class AllLinksFragment: Fragment() {
             }
 
 
-            override fun onResponse(call: Call<LinkResults>,
-                                    response: Response<LinkResults>) {
-
+            override fun onResponse(call: Call<LinkResults>, response: Response<LinkResults>) {
                 if (response.isSuccessful) {
                     val links = response.body()!!
                     setupRecyclerView(links.results)
                     totalItems = links.count // set total items
                     receivedItems = links.results.size // set received items
                 } else {
-                    Toast.makeText(context, "Failed to retrieve user's links!",
+                    Toast.makeText(context, "Failed to retrieve links!",
                         Toast.LENGTH_LONG).show()
                 }
             }
@@ -106,8 +126,7 @@ class AllLinksFragment: Fragment() {
     private fun getPaginatedLinks(page: Int, linkAdapter: LinkAdapter) {
         isLoading = true
 
-        val token = "token ${appPreference.getUserToken()}"
-        val call = AppController.apiInterface.dashboard(token, page)
+        val call = AppController.apiInterface.links("groups", page, app=app)
 
         call.enqueue(object: Callback<LinkResults> {
 
@@ -117,7 +136,8 @@ class AllLinksFragment: Fragment() {
 
 
             override fun onResponse(call: Call<LinkResults>,
-                                    response: Response<LinkResults>) {
+                                    response: Response<LinkResults>
+            ) {
 
                 if (response.isSuccessful) {
                     val links = response.body()!!
@@ -126,9 +146,35 @@ class AllLinksFragment: Fragment() {
                     receivedItems += links.results.size
                     isLoading = false
                 } else {
-                    Toast.makeText(context, "Failed to retrieve user's links!",
+                    Toast.makeText(context, "Failed to retrieve links!",
                         Toast.LENGTH_LONG).show()
                 }
+            }
+        })
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
+        inflater?.inflate(R.menu.group_list_menu, menu)
+
+        val searchView = menu.findItem(R.id.search)!!.actionView as SearchView
+
+        menu.findItem(R.id.search).apply {
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_IF_ROOM)
+            actionView = searchView
+        }
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                linkAdapter.filter.filter(query!!)
+                return false
+            }
+
+            override fun onQueryTextChange(query: String?): Boolean {
+                linkAdapter.filter.filter(query!!)
+                return false
             }
         })
     }

@@ -15,13 +15,13 @@ import ir.homelinks.homelinks.model.LinkModel
 import ir.homelinks.homelinks.model.LinkResults
 import ir.homelinks.homelinks.utility.AppController
 import it.gmariotti.recyclerview.adapter.SlideInBottomAnimatorAdapter
-import kotlinx.android.synthetic.main.activity_link_list.*
+import kotlinx.android.synthetic.main.activity_instagram_list.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 
-class LinkListActivity : AppCompatActivity() {
+class InstagramListActivity : AppCompatActivity() {
 
     private lateinit var linkAdapter: LinkAdapter
     private var page = 1
@@ -30,38 +30,33 @@ class LinkListActivity : AppCompatActivity() {
     private var isLoading = false
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_link_list)
+        setContentView(R.layout.activity_instagram_list)
 
-        setSupportActionBar(link_list_toolbar)
-        link_list_layout.setOnClickListener(null)
+        instagrams_list_layout.setOnClickListener(null)
+        instagram_list_toolbar.title = getString(R.string.instagrams)
+        setSupportActionBar(instagram_list_toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val extras = intent.extras
-        if (extras != null) {
-            val link = extras.getString("link", "")
-            if (link.isNotEmpty()) {
-                getLinks(link)
-            }
-        } else {
-            Toast.makeText(baseContext, "No category was selected!", Toast.LENGTH_SHORT).show()
-        }
+        getLinks()
     }
 
 
-    private fun setupRecyclerView(link: String, linkList: List<LinkModel>) {
+    private fun setupRecyclerView(linkList: List<LinkModel>) {
         linkAdapter = LinkAdapter(baseContext, linkList)
 
         val linearLayoutManager = LinearLayoutManager(baseContext,
             LinearLayoutManager.VERTICAL, false)
 
-        linkRecycler.layoutManager = linearLayoutManager
-        linkRecycler.adapter = linkAdapter
+        links_recycler_view.layoutManager = linearLayoutManager
+        links_recycler_view.adapter = linkAdapter
 
-        val slideInBottomAnimatorAdapter = SlideInBottomAnimatorAdapter(linkAdapter, linkRecycler)
-        linkRecycler.adapter = slideInBottomAnimatorAdapter
+        val slideInBottomAnimatorAdapter = SlideInBottomAnimatorAdapter(linkAdapter, links_recycler_view)
+        links_recycler_view.adapter = slideInBottomAnimatorAdapter
 
-        linkRecycler.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        links_recycler_view.addOnScrollListener(object: RecyclerView.OnScrollListener() {
 
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
 
@@ -69,7 +64,7 @@ class LinkListActivity : AppCompatActivity() {
                     if (receivedItems < totalItems) {
                         page += 1
                         if (!isLoading) {
-                            getPaginatedLinks(link, page, linkAdapter)
+                            getPaginatedLinks(page, linkAdapter)
                         } else {
                             page -= 1
                         }
@@ -80,8 +75,8 @@ class LinkListActivity : AppCompatActivity() {
     }
 
 
-    private fun getLinks(link: String) {
-        val call = AppController.apiInterface.links(link)
+    private fun getLinks() {
+        val call = AppController.apiInterface.links("instagrams")
 
         call.enqueue(object: Callback<LinkResults> {
 
@@ -91,11 +86,12 @@ class LinkListActivity : AppCompatActivity() {
 
 
             override fun onResponse(call: Call<LinkResults>,
-                                    response: Response<LinkResults>) {
+                                    response: Response<LinkResults>
+            ) {
 
                 if (response.isSuccessful) {
                     val links = response.body()!!
-                    setupRecyclerView(link, links.results)
+                    setupRecyclerView(links.results)
                     totalItems = links.count // set total items
                     receivedItems = links.results.size // set received items
                 } else {
@@ -107,10 +103,10 @@ class LinkListActivity : AppCompatActivity() {
     }
 
 
-    private fun getPaginatedLinks(link: String, page: Int, linkAdapter: LinkAdapter) {
+    private fun getPaginatedLinks(page: Int, linkAdapter: LinkAdapter) {
         isLoading = true
 
-        val call = AppController.apiInterface.links(link, page)
+        val call = AppController.apiInterface.links("instagrams", page)
 
         call.enqueue(object: Callback<LinkResults> {
 
@@ -120,7 +116,8 @@ class LinkListActivity : AppCompatActivity() {
 
 
             override fun onResponse(call: Call<LinkResults>,
-                                    response: Response<LinkResults>) {
+                                    response: Response<LinkResults>
+            ) {
 
                 if (response.isSuccessful) {
                     val links = response.body()!!
@@ -138,14 +135,14 @@ class LinkListActivity : AppCompatActivity() {
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.link_list_menu, menu)
+        menuInflater.inflate(R.menu.instagram_list_menu, menu)
 
         val searchView = menu?.findItem(R.id.search)!!.actionView as SearchView
 
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
 
             override fun onQueryTextSubmit(query: String?): Boolean {
-                linkAdapter!!.filter.filter(query!!)
+                linkAdapter.filter.filter(query!!)
                 return false
             }
 
@@ -157,6 +154,7 @@ class LinkListActivity : AppCompatActivity() {
 
         return super.onCreateOptionsMenu(menu)
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
@@ -178,6 +176,22 @@ class LinkListActivity : AppCompatActivity() {
 
             R.id.about_us -> {
                 startActivity(Intent(this, AboutUsActivity::class.java))
+            }
+
+            R.id.websites -> {
+                startActivity(Intent(this, WebsiteListActivity::class.java))
+            }
+
+            R.id.channels -> {
+                startActivity(Intent(this, ChannelListActivity::class.java))
+            }
+
+            R.id.groups -> {
+                startActivity(Intent(this, GroupListActivity::class.java))
+            }
+
+            android.R.id.home -> {
+                onBackPressed()
             }
         }
 

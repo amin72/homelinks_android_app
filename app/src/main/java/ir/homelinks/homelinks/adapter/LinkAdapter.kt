@@ -8,16 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import android.widget.ImageView
+import android.widget.TextView
 import com.squareup.picasso.Picasso
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.LinkModel
 import ir.homelinks.homelinks.ui.activity.LinkDetailActivity
 import ir.homelinks.homelinks.utility.ClientConstants
+import ir.homelinks.homelinks.utility.LinkUtility
 import kotlinx.android.synthetic.main.link_list_row.view.*
 
 
 class LinkAdapter(private var context: Context,
-                  private var links: List<LinkModel>):
+                  private val links: List<LinkModel>):
     RecyclerView.Adapter<LinkAdapter.ViewHolder>(), Filterable {
 
     var linkList = links.toMutableList()
@@ -47,11 +50,11 @@ class LinkAdapter(private var context: Context,
         val thumbnailPath = "${ClientConstants.HOMELINKS_URL}${link.thumbnail}"
         Picasso.get().load(thumbnailPath).into(holder.thumbnail)
 
-        val created_at = "${context.getString(R.string.created_at)} ${link.created}"
-        holder.created.text = created_at
+        val createdAt = "${context.getString(R.string.created_at)}: ${LinkUtility.convertDate(link.created)}"
+        holder.created.text = createdAt
 
         holder.itemView.setOnClickListener {
-            var intent = Intent(context, LinkDetailActivity::class.java)
+            val intent = Intent(context, LinkDetailActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
             val splitDetailUrl = link.detail_url.split("/").takeLast(3)
@@ -66,9 +69,9 @@ class LinkAdapter(private var context: Context,
 
 
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val title = view.link_title
-        val created = view.link_created
-        val thumbnail = view.link_thumbnail
+        val title: TextView = view.link_title
+        val created: TextView = view.link_created
+        val thumbnail: ImageView = view.link_thumbnail
     }
 
 
