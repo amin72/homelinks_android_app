@@ -1,106 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.activity.InstagramCreateOrUpdateActivity"
-        android:id="@+id/create_instagram_layout"
-        android:focusable="true"
-        android:focusableInTouchMode="true">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:fillViewport="false">
 
 
-        <android.support.v7.widget.Toolbar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                android:minHeight="?attr/actionBarSize"
-                android:id="@+id/create_instagram_toolbar"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="0dp"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                app:layout_constraintTop_toTopOf="parent"/>
+        <android.support.constraint.ConstraintLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".ui.activity.InstagramCreateOrUpdateActivity"
+            android:id="@+id/create_instagram_layout"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
 
-        <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/title_input_layout"
-                android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@+id/create_instagram_toolbar"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="16dp">
-
-            <android.support.v7.widget.AppCompatEditText
+            <android.support.v7.widget.Toolbar
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/title_text"
-                    android:inputType="text"
-                    android:hint="@string/title"
-                    android:maxLength="60"/>
-        </android.support.design.widget.TextInputLayout>
+                    android:background="?attr/colorPrimary"
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                    android:minHeight="?attr/actionBarSize"
+                    android:id="@+id/create_instagram_toolbar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="0dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="0dp"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
 
-        <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/title_input_layout"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@+id/create_instagram_toolbar"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="16dp">
+
+                <android.support.v7.widget.AppCompatEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/title_text"
+                        android:inputType="text"
+                        android:hint="@string/title"
+                        android:maxLength="60"/>
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/page_id_input_layout"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@+id/title_input_layout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="16dp">
+
+                <android.support.v7.widget.AppCompatEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/page_id_text"
+                        android:inputType="text"
+                        android:hint="@string/page_id"
+                        android:maxLength="30"/>
+            </android.support.design.widget.TextInputLayout>
+
+
+            <Spinner
+                    android:spinnerMode="dialog"
+                    android:id="@+id/category_spinner"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintTop_toBottomOf="@+id/page_id_input_layout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="12dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+            </Spinner>
+
+
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:id="@+id/description_input_layout"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@+id/category_spinner"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="16dp">
+
+                <android.support.v7.widget.AppCompatEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/description_text"
+                        android:inputType="textMultiLine"
+                        android:hint="@string/description"
+                        android:maxLength="500"/>
+            </android.support.design.widget.TextInputLayout>
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:background="@drawable/image_border"
+                android:id="@+id/select_image_view"
+                android:src="@color/gray_200"
+                app:layout_constraintTop_toBottomOf="@+id/description_input_layout"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toTopOf="@+id/submit_instagram_button"/>
+
+
+        <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/page_id_input_layout"
-                android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@+id/title_input_layout"
-                app:layout_constraintStart_toStartOf="parent"
+                android:id="@+id/change_image_text_view"
+                android:textColor="@color/blue_600"
+                android:text="@string/select_image"
+                app:layout_constraintTop_toBottomOf="@+id/select_image_view"
+                android:layout_marginTop="8dp"
                 android:layout_marginStart="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="16dp">
-
-            <android.support.v7.widget.AppCompatEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/page_id_text"
-                    android:inputType="text"
-                    android:hint="@string/page_id"
-                    android:maxLength="30"/>
-        </android.support.design.widget.TextInputLayout>
-
-
-        <Spinner
-                android:spinnerMode="dialog"
-                android:id="@+id/category_spinner"
-                android:layout_marginEnd="12dp"
-                android:layout_marginTop="20dp"
-                app:layout_constraintTop_toBottomOf="@+id/page_id_input_layout"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="12dp"
+                android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
-        </Spinner>
-
-
-        <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:id="@+id/description_input_layout"
-                android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@+id/category_spinner"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="16dp">
-
-            <android.support.v7.widget.AppCompatEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/description_text"
-                    android:inputType="textMultiLine"
-                    android:hint="@string/description"
-                    android:maxLength="500"/>
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/submit_instagram_button"/>
 
 
         <android.support.v7.widget.AppCompatButton
@@ -111,11 +151,14 @@
                 android:background="@drawable/button_shape"
                 android:textColor="@color/white"
                 android:textAllCaps="false"
-                app:layout_constraintTop_toBottomOf="@+id/description_input_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/change_image_text_view"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="24dp"/>
 
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

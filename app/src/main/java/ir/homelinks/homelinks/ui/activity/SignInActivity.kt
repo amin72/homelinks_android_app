@@ -23,9 +23,11 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
 
+
+        sign_in_layout.setOnClickListener(null)
+        sign_in_toolbar.title = getString(R.string.sign_in)
         setSupportActionBar(sign_in_toolbar)
 
-        login_layout.setOnClickListener(null)
 
         login_button.setOnClickListener {
 
@@ -51,6 +53,12 @@ class SignInActivity : AppCompatActivity() {
             } else {
 
                 val user = UserModel(username, password)
+
+                // for later use
+                user.email = ""
+                user.firstName = ""
+                user.lastName = ""
+
                 val call = AppController.apiInterface.login(user)
 
                 call.enqueue(object : Callback<TokenModel> {
@@ -58,7 +66,7 @@ class SignInActivity : AppCompatActivity() {
                         // show a dialog instead of toast
                         Toast.makeText(
                             baseContext,
-                            getString(R.string.failed_to_connect_to_server).toString(),
+                            getString(R.string.failed_connect_to_server).toString(),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -75,9 +83,31 @@ class SignInActivity : AppCompatActivity() {
                             val token = response.body()!!
 
                             // Save token in shared preference tools
-                            var appPreference = AppPreferenceTools(baseContext)
+                            val appPreference = AppPreferenceTools(baseContext)
                             appPreference.saveUserToken(token)
+
+                            // get user information
+                            val userInfoCall = AppController.apiInterface.getUserInfo("token ${token.key}")
+
+                            userInfoCall.enqueue(object: Callback<UserModel> {
+                                override fun onFailure(call: Call<UserModel>, t: Throwable) {
+                                    // save user information in shared preference tools
+                                    appPreference.saveUserInfo(user)
+                                }
+
+                                override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
+                                    val userInfo = response.body()!!
+
+                                    // save user information in shared preference tools
+                                    user.email = userInfo.email
+                                    user.firstName = userInfo.firstName
+                                    user.lastName = userInfo.lastName
+                                    appPreference.saveUserInfo(user)
+                                }
+                            })
+
                             startActivity(Intent(baseContext, MainActivity::class.java))
+                            finish()
 
                         } else {
 
@@ -110,7 +140,7 @@ class SignInActivity : AppCompatActivity() {
         }
 
 
-        get_help_sign_in.setOnClickListener {
+        reset_password.setOnClickListener {
             startActivity(Intent(this, ResetPasswordActivity::class.java))
         }
 

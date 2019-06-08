@@ -41,6 +41,7 @@ class CategoryAdapter(private var context: Context,
             val intent = Intent(context, CategorizedItemsActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtra("id", category.id)
+            intent.putExtra("name", category.name)
             context.startActivity(intent)
         }
     }

@@ -6,11 +6,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.LinkModel
 import ir.homelinks.homelinks.ui.activity.LinkDetailActivity
@@ -25,7 +23,6 @@ class LinkAdapter(private var context: Context,
 
     var linkList = links.toMutableList()
     var filteredLinks = linkList
-    //val appPreferenceTools = AppPreferenceTools(context)
 
 
     // RecyclerView.Adapter method
@@ -53,6 +50,12 @@ class LinkAdapter(private var context: Context,
         val createdAt = "${context.getString(R.string.created_at)}: ${LinkUtility.convertDate(link.created)}"
         holder.created.text = createdAt
 
+        if (link.status.isNotEmpty()) {
+            holder.status.visibility = View.VISIBLE
+            val status = "${context.getString(R.string.status)}: ${link.status.capitalize()}"
+            holder.status.text = status
+        }
+
         holder.itemView.setOnClickListener {
             val intent = Intent(context, LinkDetailActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -72,6 +75,7 @@ class LinkAdapter(private var context: Context,
         val title: TextView = view.link_title
         val created: TextView = view.link_created
         val thumbnail: ImageView = view.link_thumbnail
+        val status: TextView = view.status
     }
 
 
@@ -82,24 +86,27 @@ class LinkAdapter(private var context: Context,
 
                 val query = constraint?.toString()
 
-                if (query!!.isEmpty()) {
-                    filteredLinks = linkList
-                } else {
-                    var filteredList = mutableListOf<LinkModel>()
+                try {
+                    if (query!!.isEmpty()) {
+                        filteredLinks = linkList
+                    } else {
+                        var filteredList = mutableListOf<LinkModel>()
 
-                    for (link in linkList) {
+                        for (link in linkList) {
 
-                        if (link.title.toLowerCase().contains(query)) {
-                            filteredList.add(link)
+                            if (link.title.toLowerCase().contains(query)) {
+                                filteredList.add(link)
+                            }
                         }
-                    }
 
-                    filteredLinks = filteredList
+                        filteredLinks = filteredList
+                    }
+                } catch (e: Exception) {
+                    filteredLinks = linkList
                 }
 
                 val filterResults = FilterResults()
                 filterResults.values = filteredLinks
-
                 return filterResults
             }
 

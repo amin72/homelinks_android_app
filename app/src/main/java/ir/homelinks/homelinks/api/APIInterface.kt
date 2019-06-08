@@ -58,6 +58,10 @@ interface APIInterface {
     fun login(@Body user: UserModel): Call<TokenModel>
 
 
+    @POST("auth/logout/")
+    fun logout(): Call<ResponseModel>
+
+
     @POST("auth/register/")
     fun register(@Body user: UserModel): Call<UserModel>
 
@@ -251,4 +255,12 @@ interface APIInterface {
         @Path("link") link: String,
         @Query("page") page: Int = 1
     ): Call <LinkResults>
+
+
+    @DELETE("{link}/{slug}/delete/")
+    fun removeLink(
+        @Header("Authorization") token: String,
+        @Path("link") link: String,
+        @Path("slug") slug: String
+    ): Call<Unit>
 }

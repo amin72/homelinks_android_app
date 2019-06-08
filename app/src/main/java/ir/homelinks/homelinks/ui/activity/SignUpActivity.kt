@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.design.widget.TextInputLayout
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.MenuItem
 import android.widget.Toast
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.UserModel
@@ -22,8 +23,10 @@ class SignUpActivity : AppCompatActivity(), TextWatcher {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
-        setSupportActionBar(sign_up_toolbar)
         sign_up_layout.setOnClickListener(null)
+        sign_up_toolbar.title = getString(R.string.signup)
+        setSupportActionBar(sign_up_toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         sign_up_button.setOnClickListener {
 
@@ -64,7 +67,7 @@ class SignUpActivity : AppCompatActivity(), TextWatcher {
                         // show a dialog instead of toast
                         Toast.makeText(
                             baseContext,
-                            getString(R.string.failed_to_connect_to_server).toString(),
+                            getString(R.string.failed_connect_to_server).toString(),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -160,5 +163,13 @@ class SignUpActivity : AppCompatActivity(), TextWatcher {
     private fun getFieldMessage(field: TextInputLayout, message: String) {
         field.isErrorEnabled = true
         field.error = message
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

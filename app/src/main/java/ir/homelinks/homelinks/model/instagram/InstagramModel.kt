@@ -6,6 +6,7 @@ import ir.homelinks.homelinks.model.CategoryModel
 
 class InstagramModel {
     lateinit var title: String
+    lateinit var slug: String
     @SerializedName("page_id")
     lateinit var pageId: String
     var category: Int = 0

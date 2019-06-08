@@ -4,9 +4,8 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.support.v7.widget.SearchView
+import android.view.*
 import android.widget.Toast
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.adapter.LinkAdapter
@@ -32,6 +31,7 @@ class AllUserLinksFragment: Fragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.links_fragment, container, false)
     }
 
@@ -129,6 +129,35 @@ class AllUserLinksFragment: Fragment() {
                     Toast.makeText(context, "Failed to retrieve user's links!",
                         Toast.LENGTH_LONG).show()
                 }
+            }
+        })
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
+        inflater?.inflate(R.menu.user_links_menu, menu)
+
+        val searchView = menu.findItem(R.id.search)!!.actionView as SearchView
+
+        menu.findItem(R.id.search).apply {
+            setShowAsAction(
+                MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or
+                        MenuItem.SHOW_AS_ACTION_IF_ROOM
+            )
+            actionView = searchView
+        }
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                linkAdapter.filter.filter(query!!)
+                return false
+            }
+
+            override fun onQueryTextChange(query: String?): Boolean {
+                linkAdapter.filter.filter(query!!)
+                return false
             }
         })
     }

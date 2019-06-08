@@ -3,9 +3,12 @@ package ir.homelinks.homelinks.ui.activity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import ir.homelinks.homelinks.R
+import ir.homelinks.homelinks.utility.LinkUtility
 import kotlinx.android.synthetic.main.activity_add_link.*
 
 class AddLinkActivity : AppCompatActivity() {
@@ -14,8 +17,10 @@ class AddLinkActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_link)
 
-        setSupportActionBar(add_link_toolbar)
         add_link_layout.setOnClickListener(null)
+        add_link_toolbar.title = getString(R.string.add_new_link)
+        setSupportActionBar(add_link_toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         ArrayAdapter.createFromResource(
             this,
@@ -49,10 +54,23 @@ class AddLinkActivity : AppCompatActivity() {
 
             if (intent != null) {
                 startActivity(intent)
+                finish()
             } else {
                 Toast.makeText(baseContext, resources.getString(R.string.select_link_type),
                     Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.add_link_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        LinkUtility.handleMenuItem(this, item?.itemId)
+        return super.onOptionsItemSelected(item)
     }
 }

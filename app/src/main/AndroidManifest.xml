@@ -3,6 +3,8 @@
           package="ir.homelinks.homelinks">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
             android:name=".utility.AppController"
@@ -18,8 +20,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity android:name=".ui.activity.LinkListActivity">
+
         </activity>
         <activity android:name=".ui.activity.LinkDetailActivity">
         </activity>
@@ -53,7 +54,7 @@
         </activity>
         <activity android:name=".ui.activity.SearchLinksActivity">
         </activity>
-        <activity android:name=".ui.activity.UsersLinksActivity">
+        <activity android:name=".ui.activity.UserLinksActivity">
         </activity>
         <activity android:name=".ui.IndexActivity">
         </activity>
@@ -65,7 +66,7 @@
         </activity>
         <activity android:name=".ui.activity.AddLinkActivity">
         </activity>
-        <activity android:name=".ui.activity.DashboardActivity">
+        <activity android:name=".ui.activity.UserLinksActivity">
         </activity>
         <activity android:name=".ui.activity.WebsiteListActivity">
         </activity>

@@ -11,10 +11,11 @@ import ir.homelinks.homelinks.adapter.ViewPagerAdapter
 import ir.homelinks.homelinks.ui.fragment.AllUserLinksFragment
 import ir.homelinks.homelinks.ui.fragment.UserLinksFragment
 import ir.homelinks.homelinks.utility.AppPreferenceTools
+import ir.homelinks.homelinks.utility.LinkUtility
 import kotlinx.android.synthetic.main.activity_dashboard.*
 
 
-class DashboardActivity : AppCompatActivity() {
+class UserLinksActivity : AppCompatActivity() {
 
     private lateinit var appPreference: AppPreferenceTools
     private lateinit var viewPagerAdapter: ViewPagerAdapter
@@ -24,12 +25,16 @@ class DashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
 
-        dashboard_toolbar.title = "Dashboard"
+
+        dashboard_layout.setOnClickListener(null)
+        dashboard_toolbar.title = getString(R.string.dashboard)
         setSupportActionBar(dashboard_toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
 
         appPreference = AppPreferenceTools(baseContext)
 
-        if (appPreference.isAuthrorized()) {
+        if (appPreference.isAuthorized()) {
             viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
             viewPagerAdapter.notifyDataSetChanged()
 
@@ -48,29 +53,13 @@ class DashboardActivity : AppCompatActivity() {
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.dashboard_menu, menu)
+        menuInflater.inflate(R.menu.user_links_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.about_us -> {
-                startActivity(Intent(this, AboutUsActivity::class.java))
-            }
-
-            R.id.search -> {
-                Toast.makeText(baseContext, "Search", Toast.LENGTH_SHORT).show()
-            }
-
-            R.id.add_new_link -> {
-                startActivity(Intent(this, AddLinkActivity::class.java))
-            }
-
-            R.id.contact_us -> {
-                startActivity(Intent(this, ContactUsActivity::class.java))
-            }
-        }
+        LinkUtility.handleMenuItem(this, item?.itemId)
         return super.onOptionsItemSelected(item)
     }
 }

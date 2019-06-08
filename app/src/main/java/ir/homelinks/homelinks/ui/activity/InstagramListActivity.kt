@@ -14,6 +14,7 @@ import ir.homelinks.homelinks.adapter.LinkAdapter
 import ir.homelinks.homelinks.model.LinkModel
 import ir.homelinks.homelinks.model.LinkResults
 import ir.homelinks.homelinks.utility.AppController
+import ir.homelinks.homelinks.utility.LinkUtility
 import it.gmariotti.recyclerview.adapter.SlideInBottomAnimatorAdapter
 import kotlinx.android.synthetic.main.activity_instagram_list.*
 import retrofit2.Call
@@ -157,44 +158,7 @@ class InstagramListActivity : AppCompatActivity() {
 
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.add_new_link -> {
-                startActivity(Intent(this, AddLinkActivity::class.java))
-            }
-
-            R.id.dashboard -> {
-                startActivity(Intent(this, DashboardActivity::class.java))
-            }
-
-            R.id.categories -> {
-                startActivity(Intent(this, CategoryListActivity::class.java))
-            }
-
-            R.id.contact_us -> {
-                startActivity(Intent(this, ContactUsActivity::class.java))
-            }
-
-            R.id.about_us -> {
-                startActivity(Intent(this, AboutUsActivity::class.java))
-            }
-
-            R.id.websites -> {
-                startActivity(Intent(this, WebsiteListActivity::class.java))
-            }
-
-            R.id.channels -> {
-                startActivity(Intent(this, ChannelListActivity::class.java))
-            }
-
-            R.id.groups -> {
-                startActivity(Intent(this, GroupListActivity::class.java))
-            }
-
-            android.R.id.home -> {
-                onBackPressed()
-            }
-        }
-
+        LinkUtility.handleMenuItem(this, item?.itemId)
         return super.onOptionsItemSelected(item)
     }
 }

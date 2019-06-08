@@ -301,4 +301,7 @@
     <color name="blue_gray_800">#37474F</color>
     <color name="blue_gray_900">#263238</color>
 
+    <color name="report_link">#d93d4c</color>
+    <color name="join_link">#3aa652</color>
+
 </resources>

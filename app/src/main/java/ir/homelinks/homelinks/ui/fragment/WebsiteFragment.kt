@@ -113,7 +113,7 @@ class WebsiteFragment : Fragment() {
                     totalItems = links.count // set total items
                     receivedItems = links.results.size // set received items
                 } else {
-                    Toast.makeText(context, "Failed to retrieve links!",
+                    Toast.makeText(context, getString(R.string.failed_retrieve_links),
                         Toast.LENGTH_LONG).show()
                 }
             }
@@ -144,7 +144,7 @@ class WebsiteFragment : Fragment() {
                     receivedItems += links.results.size
                     isLoading = false
                 } else {
-                    Toast.makeText(context, "Failed to retrieve links!",
+                    Toast.makeText(context, getString(R.string.failed_retrieve_links),
                         Toast.LENGTH_LONG).show()
                 }
             }
@@ -160,7 +160,8 @@ class WebsiteFragment : Fragment() {
         val searchView = menu.findItem(R.id.search)!!.actionView as SearchView
 
         menu.findItem(R.id.search).apply {
-            setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_IF_ROOM)
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or
+                    MenuItem.SHOW_AS_ACTION_IF_ROOM)
             actionView = searchView
         }
 

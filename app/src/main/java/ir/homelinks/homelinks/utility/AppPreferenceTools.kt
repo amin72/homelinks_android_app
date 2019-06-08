@@ -9,7 +9,7 @@ import ir.homelinks.homelinks.model.UserModel
 
 
 class AppPreferenceTools(val context: Context) {
-    val preferences: SharedPreferences =
+    private val preferences: SharedPreferences =
         context.getSharedPreferences("app_preference", Context.MODE_PRIVATE)
 
 
@@ -28,8 +28,8 @@ class AppPreferenceTools(val context: Context) {
         preferences.edit()
             .putString(context.getString(R.string.pref_user_name), user.username)
             .putString(context.getString(R.string.pref_user_email), user.email)
-            .putString(context.getString(R.string.pref_user_name), user.firstName)
-            .putString(context.getString(R.string.pref_user_name), user.lastName)
+            .putString(context.getString(R.string.pref_user_first_name), user.firstName)
+            .putString(context.getString(R.string.pref_user_last_name), user.lastName)
             .apply()
     }
 
@@ -51,7 +51,7 @@ class AppPreferenceTools(val context: Context) {
     }
 
 
-    // return token if avialabel else `STRING_PREF_UNAVAILABLE` is returned
+    // return token if available else `STRING_PREF_UNAVAILABLE` is returned
     fun getUserToken(): String {
         return preferences.getString(context.getString(R.string.pref_user_token),
             STRING_PREF_UNAVAILABLE)
@@ -63,7 +63,7 @@ class AppPreferenceTools(val context: Context) {
     }
 
 
-    fun isAuthrorized(): Boolean {
+    fun isAuthorized(): Boolean {
         return getUserToken().equals(STRING_PREF_UNAVAILABLE).not()
     }
 }

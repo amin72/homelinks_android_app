@@ -4,13 +4,15 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.adapter.LinkAdapter
 import ir.homelinks.homelinks.model.LinkModel
-import ir.homelinks.homelinks.model.LinkResults
 import ir.homelinks.homelinks.model.PaginatedResponseModel
 import ir.homelinks.homelinks.utility.AppController
+import ir.homelinks.homelinks.utility.LinkUtility
 import it.gmariotti.recyclerview.adapter.SlideInBottomAnimatorAdapter
 import kotlinx.android.synthetic.main.activity_categorized_items.*
 import retrofit2.Call
@@ -31,13 +33,22 @@ class CategorizedItemsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_categorized_items)
 
-        setSupportActionBar(categorized_items_toolbar)
+        categorized_items_layout.setOnClickListener(null)
+
 
         val extras = intent.extras
         if (extras != null) {
-            val id = extras.getInt("id", 0)
-            if (id > 0) {
-                getCategorizedItems(id)
+            val categoryId = extras.getInt("id", 0)
+            val categoryName = extras.getString("name", "")
+
+            if (categoryName.isNotEmpty()) {
+                categorized_items_toolbar.title = categoryName
+            }
+            setSupportActionBar(categorized_items_toolbar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+            if (categoryId > 0) {
+                getCategorizedItems(categoryId)
             }
         } else {
             Toast.makeText(baseContext, "No category was selected!", Toast.LENGTH_SHORT).show()
@@ -82,7 +93,7 @@ class CategorizedItemsActivity : AppCompatActivity() {
         call.enqueue(object: Callback<PaginatedResponseModel> {
             override fun onFailure(call: Call<PaginatedResponseModel>, t: Throwable) {
                 Toast.makeText(baseContext,
-                    getString(R.string.failed_to_connect_to_server).toString(),
+                    getString(R.string.failed_connect_to_server).toString(),
                     Toast.LENGTH_SHORT).show()
             }
 
@@ -130,5 +141,17 @@ class CategorizedItemsActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.categorized_items_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        LinkUtility.handleMenuItem(this, item?.itemId)
+        return super.onOptionsItemSelected(item)
     }
 }

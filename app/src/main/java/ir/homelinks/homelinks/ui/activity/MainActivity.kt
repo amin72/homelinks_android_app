@@ -3,13 +3,16 @@ package ir.homelinks.homelinks.ui.activity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import ir.homelinks.homelinks.R
+import ir.homelinks.homelinks.adapter.HorizontalLinkAdapter
 import ir.homelinks.homelinks.model.IndexResult
 import ir.homelinks.homelinks.utility.AppController
 import ir.homelinks.homelinks.utility.AppPreferenceTools
+import ir.homelinks.homelinks.utility.LinkUtility
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,6 +22,10 @@ import retrofit2.Response
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appPreference: AppPreferenceTools
+    private lateinit var websitesAdapter: HorizontalLinkAdapter
+    private lateinit var channelsAdapter: HorizontalLinkAdapter
+    private lateinit var groupsAdapter: HorizontalLinkAdapter
+    private lateinit var instagramsAdapter: HorizontalLinkAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
         appPreference = AppPreferenceTools(baseContext)
 
-        if (appPreference.isAuthrorized()) {
+        if (appPreference.isAuthorized()) {
             setIndexItems()
         } else {
             startActivity(Intent(baseContext, SignInActivity::class.java))
@@ -52,59 +59,6 @@ class MainActivity : AppCompatActivity() {
         load_instagrams_button.setOnClickListener {
             startActivity(Intent(this, InstagramListActivity::class.java))
         }
-
-        //startActivity(Intent(this, LinkListActivity::class.java)) // +
-        //startActivity(Intent(this, SignInActivity::class.java)) // +
-        //startActivity(Intent(this, SignUpActivity::class.java)) // +
-
-        // Add `update` to next four activities
-        // handle errors
-
-//        val websiteIntent = Intent(this, WebsiteCreateOrUpdateActivity::class.java)
-//        websiteIntent.putExtra("slug", "website6-com")
-//        startActivity(websiteIntent)
-
-//        val channelIntent = Intent(this, ChannelCreateOrUpdateActivity::class.java)
-//        channelIntent.putExtra("slug", "telegram-channel3")
-//        startActivity(channelIntent)
-
-//        val groupIntent = Intent(this, GroupCreateOrUpdateActivity::class.java)
-//        groupIntent.putExtra("slug", "whatsapp-group4-fb621b6cf-e9e7-4eba-9066-bf14bbd1c8e2")
-//        startActivity(groupIntent)
-
-//        val instagramIntent = Intent(this, InstagramCreateOrUpdateActivity::class.java)
-//        instagramIntent.putExtra("slug", "ig-page4")
-//        startActivity(instagramIntent)
-
-        //startActivity(Intent(this, WebsiteCreateOrUpdateActivity::class.java)) // + add image field
-        //startActivity(Intent(this, ChannelCreateOrUpdateActivity::class.java)) // + add image field
-        //startActivity(Intent(this, GroupCreateOrUpdateActivity::class.java)) // + add image field
-        //startActivity(Intent(this, InstagramCreateOrUpdateActivity::class.java)) // + add image field
-
-        //startActivity(Intent(this, ReportLinkActivity::class.java)) // +
-        //startActivity(Intent(this, ContactUsActivity::class.java)) // +
-        //startActivity(Intent(this, UpdateUserActivity::class.java)) // +
-        //startActivity(Intent(this, UserChangePassword::class.java)) // +
-        //startActivity(Intent(this, ResetPasswordActivity::class.java)) // +
-        //startActivity(Intent(this, CategoryListActivity::class.java)) //‌ +
-
-//        val categorizedItemsIntent = Intent(this, CategorizedItemsActivity::class.java)
-//        categorizedItemsIntent.putExtra("id", 9)
-//        startActivity(categorizedItemsIntent)
-
-        //startActivity(Intent(this, UsersLinksActivity::class.java)) // + handle pagination
-
-//        val taggedItemsIntent = Intent(this, TaggedItemsActivity::class.java)
-//        taggedItemsIntent.putExtra("tag", "sport")
-//        startActivity(taggedItemsIntent)
-
-        //startActivity(Intent(this, SearchLinksActivity::class.java))
-
-        // find a way to display tags in link detail activity
-        // handle ui and scrolling
-        //startActivity(Intent(this, LinkDetailActivity::class.java)) // +
-
-        //startActivity(Intent(this, AddLinkActivity::class.java)) // select link type
     }
 
 
@@ -114,12 +68,38 @@ class MainActivity : AppCompatActivity() {
 
         call.enqueue(object: Callback<IndexResult> {
             override fun onFailure(call: Call<IndexResult>, t: Throwable) {
-                Toast.makeText(baseContext, "Fail!", Toast.LENGTH_SHORT).show()
-                //Log.d("---------Fail", t.message)
+                Toast.makeText(baseContext, getString(R.string.failed_connect_to_server), Toast.LENGTH_SHORT).show()
             }
 
             override fun onResponse(call: Call<IndexResult>, response: Response<IndexResult>) {
-                Toast.makeText(baseContext, "Success!", Toast.LENGTH_SHORT).show()
+                val paginatedResponse = response.body()!!
+                val websites = paginatedResponse.websites
+                val channels = paginatedResponse.channels
+                val groups = paginatedResponse.groups
+                val instagrams = paginatedResponse.instagrams
+
+                // create adapters
+                websitesAdapter = HorizontalLinkAdapter(baseContext, websites)
+                channelsAdapter = HorizontalLinkAdapter(baseContext, channels)
+                groupsAdapter = HorizontalLinkAdapter(baseContext, groups)
+                instagramsAdapter = HorizontalLinkAdapter(baseContext, instagrams)
+
+                // set recyclers' layout managers and adapters
+                websites_recyclerView.layoutManager = LinearLayoutManager(baseContext,
+                    LinearLayoutManager.HORIZONTAL, false)
+                websites_recyclerView.adapter = websitesAdapter
+
+                channels_recyclerView.layoutManager = LinearLayoutManager(baseContext,
+                    LinearLayoutManager.HORIZONTAL, false)
+                channels_recyclerView.adapter = channelsAdapter
+
+                groups_recyclerView.layoutManager = LinearLayoutManager(baseContext,
+                    LinearLayoutManager.HORIZONTAL, false)
+                groups_recyclerView.adapter = groupsAdapter
+
+                instagrams_recyclerView.layoutManager = LinearLayoutManager(baseContext,
+                    LinearLayoutManager.HORIZONTAL, false)
+                instagrams_recyclerView.adapter = instagramsAdapter
             }
         })
     }
@@ -132,28 +112,19 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.add_new_link -> {
-                startActivity(Intent(this, AddLinkActivity::class.java))
-            }
-
-            R.id.dashboard -> {
-                startActivity(Intent(this, DashboardActivity::class.java))
-            }
-
-            R.id.categories -> {
-                startActivity(Intent(this, CategoryListActivity::class.java))
-            }
-
-            R.id.contact_us -> {
-                startActivity(Intent(this, ContactUsActivity::class.java))
-            }
-
-            R.id.about_us -> {
-                startActivity(Intent(this, AboutUsActivity::class.java))
-            }
-        }
-
+        LinkUtility.handleMenuItem(this, item?.itemId)
         return super.onOptionsItemSelected(item)
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+
+        if (appPreference.isAuthorized()) {
+            setIndexItems()
+        } else {
+            startActivity(Intent(baseContext, SignInActivity::class.java))
+            finish()
+        }
     }
 }

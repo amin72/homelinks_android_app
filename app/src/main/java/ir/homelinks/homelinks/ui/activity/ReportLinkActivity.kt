@@ -2,6 +2,10 @@ package ir.homelinks.homelinks.ui.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.TextInputLayout
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import ir.homelinks.homelinks.R
@@ -9,6 +13,8 @@ import ir.homelinks.homelinks.model.ChoiceModel
 import ir.homelinks.homelinks.model.report_links.ReportLinkModel
 import ir.homelinks.homelinks.model.report_links.ReportLinkOptions
 import ir.homelinks.homelinks.utility.AppController
+import ir.homelinks.homelinks.utility.LinkUtility
+import ir.homelinks.homelinks.utility.Messages
 import kotlinx.android.synthetic.main.activity_report_link.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -21,9 +27,10 @@ class ReportLinkActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report_link)
 
-        setSupportActionBar(report_link_toolbar)
         report_link_layout.setOnClickListener(null)
-
+        report_link_toolbar.title = getString(R.string.report_link)
+        setSupportActionBar(report_link_toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         submit_report_button.setOnClickListener {
 
@@ -32,35 +39,75 @@ class ReportLinkActivity : AppCompatActivity() {
             val description = description_text.text.toString()
             val report = ReportLinkModel(type, email, description)
 
-            val callReportLink = AppController.apiInterface.reportLink("website", "website1-com", report)
-
-            callReportLink.enqueue(object : Callback<ReportLinkModel> {
-                override fun onFailure(call: Call<ReportLinkModel>, t: Throwable) {
-                    Toast.makeText(
-                        baseContext,
-                        getString(R.string.failed_to_connect_to_server).toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
+            if (email.isEmpty() || description.isEmpty()) {
+                if (email.isEmpty()) {
+                    val message = getString(R.string.email_cant_be_blank)
+                    setFieldMessage(email_input_layout, message)
+                } else {
+                    email_input_layout.isErrorEnabled = false
                 }
 
-                override fun onResponse(
-                    call: Call<ReportLinkModel>,
-                    response: Response<ReportLinkModel>
-                ) {
+                if (description.isEmpty()) {
+                    val message = getString(R.string.description_cant_be_blank)
+                    setFieldMessage(description_input_layout, message)
+                } else {
+                    description_input_layout.isErrorEnabled = false
+                }
+            } else {
+                val extras = intent.extras
+                if (extras != null) {
+                    val link = extras.getString("link", "")
+                    val slug = extras.getString("slug", "")
 
-                    if (response.isSuccessful) {
-                        val report = response.body()!!
-                        Toast.makeText(baseContext, report.type, Toast.LENGTH_SHORT).show()
-                        Toast.makeText(baseContext, report.email, Toast.LENGTH_SHORT).show()
-                        Toast.makeText(baseContext, report.text, Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(baseContext, "Failed to report link!", Toast.LENGTH_SHORT).show()
+                    if (link.isNotEmpty() && slug.isNotEmpty()) {
+                        val callReportLink = AppController.apiInterface.reportLink(link, slug, report)
+
+                        callReportLink.enqueue(object : Callback<ReportLinkModel> {
+                            override fun onFailure(call: Call<ReportLinkModel>, t: Throwable) {
+                                Toast.makeText(
+                                    baseContext,
+                                    getString(R.string.failed_connect_to_server).toString(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            override fun onResponse(call: Call<ReportLinkModel>, response: Response<ReportLinkModel>) {
+                                if (response.isSuccessful) {
+                                    val report = response.body()!!
+                                    Toast.makeText(baseContext, getString(R.string.submitted_report), Toast.LENGTH_LONG)
+                                        .show()
+                                    finish()
+                                } else {
+                                    val errors = Messages.getErrors(
+                                        response, listOf("email", "description", "non_field_errors"))
+
+                                    var emailErrorMessage = ""
+                                    var descriptionErrorMessage = ""
+
+                                    for (error in errors) {
+                                        if (error.key == "email") {
+                                            emailErrorMessage += error.value.joinToString("\n")
+                                        } else if (error.key == "description") {
+                                            descriptionErrorMessage += error.value.joinToString("\n")
+                                        } else {
+                                            for (value in error.value) {
+                                                Toast.makeText(baseContext, value, Toast.LENGTH_LONG).show()
+                                            }
+                                        }
+                                    }
+
+                                    email_input_layout.isErrorEnabled = true
+                                    email_input_layout.error = emailErrorMessage
+
+                                    description_input_layout.isErrorEnabled = true
+                                    description_input_layout.error = descriptionErrorMessage
+                                }
+                            }
+                        })
                     }
                 }
-            })
-
+            }
         }
-
 
         val callGetChoices = AppController.apiInterface.reportLinkChoices()
 
@@ -68,7 +115,7 @@ class ReportLinkActivity : AppCompatActivity() {
             override fun onFailure(call: Call<ReportLinkOptions>, t: Throwable) {
                 Toast.makeText(
                     baseContext,
-                    getString(R.string.failed_to_connect_to_server).toString(),
+                    getString(R.string.failed_connect_to_server).toString(),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -94,9 +141,27 @@ class ReportLinkActivity : AppCompatActivity() {
                     }
 
                 } else {
-                    Toast.makeText(baseContext, "Failed to fetch report options!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, getString(R.string.failed_fetch_report_options), Toast.LENGTH_SHORT).show()
                 }
             }
         })
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.report_link_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        LinkUtility.handleMenuItem(this, item?.itemId)
+        return super.onOptionsItemSelected(item)
+    }
+
+
+    private fun setFieldMessage(field: TextInputLayout, message: String) {
+        field.isErrorEnabled = true
+        field.error = message
     }
 }

@@ -3,6 +3,7 @@ package ir.homelinks.homelinks.ui.activity
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
+import android.view.MenuItem
 import android.widget.Toast
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.ResetPasswordModel
@@ -21,8 +22,10 @@ class ResetPasswordActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reset_password)
 
-        setSupportActionBar(reset_password_toolbar)
         reset_password_layout.setOnClickListener(null)
+        setSupportActionBar(reset_password_toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
 
         reset_password_button.setOnClickListener {
             val email = email_text.text.toString()
@@ -40,7 +43,7 @@ class ResetPasswordActivity : AppCompatActivity() {
                     override fun onFailure(call: Call<ResponseModel>, t: Throwable) {
                         Toast.makeText(
                             baseContext,
-                            getString(R.string.failed_to_connect_to_server).toString(),
+                            getString(R.string.failed_connect_to_server).toString(),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -81,11 +84,23 @@ class ResetPasswordActivity : AppCompatActivity() {
                 finish()
             }
         }
+
+        back_to_login.setOnClickListener {
+            finish()
+        }
     }
 
 
     private fun getFieldMessage(field: TextInputLayout, message: String) {
         field.isErrorEnabled = true
         field.error = message
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

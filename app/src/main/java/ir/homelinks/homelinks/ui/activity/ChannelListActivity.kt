@@ -8,7 +8,7 @@ import android.view.MenuItem
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.adapter.ViewPagerAdapter
 import ir.homelinks.homelinks.ui.fragment.ChannelFragment
-import ir.homelinks.homelinks.utility.AppPreferenceTools
+import ir.homelinks.homelinks.utility.LinkUtility
 import kotlinx.android.synthetic.main.activity_channel_list.*
 
 class ChannelListActivity : AppCompatActivity() {
@@ -20,6 +20,7 @@ class ChannelListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_channel_list)
 
+        channel_list_layout.setOnClickListener(null)
         channel_list_toolbar.title = getString(R.string.channels)
         setSupportActionBar(channel_list_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -46,44 +47,7 @@ class ChannelListActivity : AppCompatActivity() {
 
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.add_new_link -> {
-                startActivity(Intent(this, AddLinkActivity::class.java))
-            }
-
-            R.id.dashboard -> {
-                startActivity(Intent(this, DashboardActivity::class.java))
-            }
-
-            R.id.categories -> {
-                startActivity(Intent(this, CategoryListActivity::class.java))
-            }
-
-            R.id.contact_us -> {
-                startActivity(Intent(this, ContactUsActivity::class.java))
-            }
-
-            R.id.about_us -> {
-                startActivity(Intent(this, AboutUsActivity::class.java))
-            }
-
-            R.id.websites -> {
-                startActivity(Intent(this, WebsiteListActivity::class.java))
-            }
-
-            R.id.groups -> {
-                startActivity(Intent(this, GroupListActivity::class.java))
-            }
-
-            R.id.instagrams -> {
-                startActivity(Intent(this, InstagramListActivity::class.java))
-            }
-
-            android.R.id.home -> {
-                onBackPressed()
-            }
-        }
-
+        LinkUtility.handleMenuItem(this, item?.itemId)
         return super.onOptionsItemSelected(item)
     }
 }

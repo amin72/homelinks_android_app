@@ -8,6 +8,7 @@ import android.view.MenuItem
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.adapter.ViewPagerAdapter
 import ir.homelinks.homelinks.ui.fragment.GroupFragment
+import ir.homelinks.homelinks.utility.LinkUtility
 import kotlinx.android.synthetic.main.activity_group_list.*
 
 
@@ -20,6 +21,7 @@ class GroupListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_group_list)
 
+        group_list_layout.setOnClickListener(null)
         group_list_toolbar.title = getString(R.string.groups)
         setSupportActionBar(group_list_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -47,44 +49,7 @@ class GroupListActivity : AppCompatActivity() {
 
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.add_new_link -> {
-                startActivity(Intent(this, AddLinkActivity::class.java))
-            }
-
-            R.id.dashboard -> {
-                startActivity(Intent(this, DashboardActivity::class.java))
-            }
-
-            R.id.categories -> {
-                startActivity(Intent(this, CategoryListActivity::class.java))
-            }
-
-            R.id.contact_us -> {
-                startActivity(Intent(this, ContactUsActivity::class.java))
-            }
-
-            R.id.about_us -> {
-                startActivity(Intent(this, AboutUsActivity::class.java))
-            }
-
-            R.id.websites -> {
-                startActivity(Intent(this, WebsiteListActivity::class.java))
-            }
-
-            R.id.channels -> {
-                startActivity(Intent(this, ChannelListActivity::class.java))
-            }
-
-            R.id.instagrams -> {
-                startActivity(Intent(this, InstagramListActivity::class.java))
-            }
-
-            android.R.id.home -> {
-                onBackPressed()
-            }
-        }
-
+        LinkUtility.handleMenuItem(this, item?.itemId)
         return super.onOptionsItemSelected(item)
     }
 }

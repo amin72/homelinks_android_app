@@ -28,4 +28,6 @@ class LinkModel {
 
     // Telegram and Group fields
     lateinit var application: String
+
+    var status: String = ""
 }

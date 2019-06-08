@@ -1,44 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+            android:orderInCategory="1"
+            android:title="@string/home"
+            android:id="@+id/home"
+            android:icon="@drawable/ic_home_white_24dp"
+            app:showAsAction="ifRoom"/>
+
+    <item
+            android:orderInCategory="0"
             android:title=""
             android:id="@+id/search"
             android:icon="@drawable/ic_search_white_24dp"
-            app:showAsAction="collapseActionView|ifRoom"
+            app:showAsAction="always"
             app:actionViewClass="android.support.v7.widget.SearchView"/>
 
     <item
-            android:title="@string/dashboard"
-            android:id="@+id/dashboard"/>
+            android:title="@string/dashboard">
+
+        <menu>
+            <item
+                    android:title="@string/my_links"
+                    android:id="@+id/my_links"/>
+
+            <item
+                    android:title="@string/edit_account"
+                    android:id="@+id/edit_account"/>
+
+            <item
+                    android:title="@string/change_password"
+                    android:id="@+id/change_password"/>
+            <item
+                    android:title="@string/sign_out"
+                    android:id="@+id/sign_out"/>
+        </menu>
+    </item>
 
     <item
-            android:title="@string/websites"
-            android:id="@+id/websites"/>
+            android:title="@string/links">
+
+        <menu>
+
+            <item
+                    android:title="@string/websites"
+                    android:id="@+id/websites"/>
+
+            <item
+                    android:title="@string/channels"
+                    android:id="@+id/channels"/>
+
+            <item
+                    android:title="@string/groups"
+                    android:id="@+id/groups"/>
+        </menu>
+    </item>
 
     <item
-            android:title="@string/channels"
-            android:id="@+id/channels"/>
+            android:orderInCategory="2"
+            android:title="@string/add_new_link"
+            android:id="@+id/add_new_link"
+            android:icon="@drawable/ic_add_white_24dp"
+            app:showAsAction="ifRoom"/>
 
     <item
-            android:title="@string/groups"
-            android:id="@+id/groups"/>
-
-    <item
+            android:orderInCategory="3"
             android:title="@string/categories"
             android:id="@+id/categories"/>
 
     <item
-            android:title="@string/add_new_link"
-            android:id="@+id/add_new_link"/>
-
-    <item
+            android:orderInCategory="3"
             android:title="@string/contact_us"
             android:id="@+id/contact_us"/>
 
     <item
+            android:orderInCategory="3"
             android:title="@string/about_us"
             android:id="@+id/about_us"/>
+
 </menu>

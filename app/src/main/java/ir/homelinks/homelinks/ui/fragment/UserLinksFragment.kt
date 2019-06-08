@@ -4,9 +4,8 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.support.v7.widget.SearchView
+import android.view.*
 import android.widget.Toast
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.adapter.LinkAdapter
@@ -58,7 +57,8 @@ class UserLinksFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_user_links, container, false)
     }
 
@@ -77,8 +77,10 @@ class UserLinksFragment : Fragment() {
     private fun setupRecyclerView(linkList: List<LinkModel>) {
         linkAdapter = LinkAdapter(context!!, linkList)
 
-        val linearLayoutManager = LinearLayoutManager(context,
-            LinearLayoutManager.VERTICAL, false)
+        val linearLayoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.VERTICAL, false
+        )
 
         links_recycler_view.layoutManager = linearLayoutManager
         links_recycler_view.adapter = linkAdapter
@@ -87,7 +89,7 @@ class UserLinksFragment : Fragment() {
             SlideInBottomAnimatorAdapter(linkAdapter, links_recycler_view)
         links_recycler_view.adapter = slideInBottomAnimatorAdapter
 
-        links_recycler_view.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        links_recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
 
@@ -110,7 +112,7 @@ class UserLinksFragment : Fragment() {
         val token = "token ${appPreference.getUserToken()}"
         val call = AppController.apiInterface.getUsersLinks(token, link)
 
-        call.enqueue(object: Callback<LinkResults> {
+        call.enqueue(object : Callback<LinkResults> {
 
             override fun onFailure(call: Call<LinkResults>, t: Throwable) {
                 Toast.makeText(context, "Failed\n${t.message}", Toast.LENGTH_LONG).show()
@@ -124,8 +126,10 @@ class UserLinksFragment : Fragment() {
                     totalItems = links.count // set total items
                     receivedItems = links.results.size // set received items
                 } else {
-                    Toast.makeText(context, "Failed to retrieve user's links!",
-                        Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context, "Failed to retrieve user's links!",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         })
@@ -138,15 +142,16 @@ class UserLinksFragment : Fragment() {
         val token = "token ${appPreference.getUserToken()}"
         val call = AppController.apiInterface.getUsersLinks(token, link, page)
 
-        call.enqueue(object: Callback<LinkResults> {
+        call.enqueue(object : Callback<LinkResults> {
 
             override fun onFailure(call: Call<LinkResults>, t: Throwable) {
                 Toast.makeText(context, "Failed\n${t.message}", Toast.LENGTH_LONG).show()
             }
 
 
-            override fun onResponse(call: Call<LinkResults>,
-                                    response: Response<LinkResults>
+            override fun onResponse(
+                call: Call<LinkResults>,
+                response: Response<LinkResults>
             ) {
 
                 if (response.isSuccessful) {
@@ -156,9 +161,40 @@ class UserLinksFragment : Fragment() {
                     receivedItems += links.results.size
                     isLoading = false
                 } else {
-                    Toast.makeText(context, "Failed to retrieve user's links!",
-                        Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context, "Failed to retrieve user's links!",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
+            }
+        })
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
+        inflater?.inflate(R.menu.user_links_menu, menu)
+
+        val searchView = menu.findItem(R.id.search)!!.actionView as SearchView
+
+        menu.findItem(R.id.search).apply {
+            setShowAsAction(
+                MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or
+                        MenuItem.SHOW_AS_ACTION_IF_ROOM
+            )
+            actionView = searchView
+        }
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                linkAdapter.filter.filter(query!!)
+                return false
+            }
+
+            override fun onQueryTextChange(query: String?): Boolean {
+                linkAdapter.filter.filter(query!!)
+                return false
             }
         })
     }

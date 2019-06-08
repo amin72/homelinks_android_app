@@ -81,7 +81,7 @@ class TaggedItemsActivity : AppCompatActivity() {
         call.enqueue(object: Callback<PaginatedResponseModel> {
             override fun onFailure(call: Call<PaginatedResponseModel>, t: Throwable) {
                 Toast.makeText(baseContext,
-                    getString(R.string.failed_to_connect_to_server).toString(),
+                    getString(R.string.failed_connect_to_server).toString(),
                     Toast.LENGTH_SHORT).show()
             }
 

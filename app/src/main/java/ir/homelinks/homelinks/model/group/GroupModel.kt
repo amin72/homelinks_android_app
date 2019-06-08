@@ -5,6 +5,7 @@ import ir.homelinks.homelinks.model.CategoryModel
 class GroupModel {
     lateinit var application: String
     lateinit var title: String
+    lateinit var slug: String
     lateinit var url: String
     var category: Int = 0
     lateinit var description: String
