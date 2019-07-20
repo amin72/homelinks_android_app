@@ -1,6 +1,5 @@
 package ir.homelinks.homelinks.ui.activity
 
-import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -13,7 +12,6 @@ import kotlinx.android.synthetic.main.activity_website_list.*
 
 
 class WebsiteListActivity : AppCompatActivity() {
-
     private lateinit var viewPagerAdapter: ViewPagerAdapter
 
 
@@ -30,9 +28,9 @@ class WebsiteListActivity : AppCompatActivity() {
         viewPagerAdapter.notifyDataSetChanged()
 
         // set fragments
-        viewPagerAdapter.addFragment(WebsiteFragment.newInstance(""), "All")
-        viewPagerAdapter.addFragment(WebsiteFragment.newInstance("iranian"), "Iranian")
-        viewPagerAdapter.addFragment(WebsiteFragment.newInstance("foreign"), "Foreign")
+        viewPagerAdapter.addFragment(WebsiteFragment.newInstance(""), getString(R.string.all))
+        viewPagerAdapter.addFragment(WebsiteFragment.newInstance("iranian"), getString(R.string.iranian))
+        viewPagerAdapter.addFragment(WebsiteFragment.newInstance("foreign"), getString(R.string.foreign))
 
         website_list_view_pager.adapter = viewPagerAdapter
         website_list_tab_layout.setupWithViewPager(website_list_view_pager)

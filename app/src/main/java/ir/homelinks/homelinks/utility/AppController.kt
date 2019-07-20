@@ -3,6 +3,7 @@ package ir.homelinks.homelinks.utility
 import android.app.Application
 import android.content.Context
 import ir.homelinks.homelinks.api.*
+import ir.tapsell.sdk.*
 
 
 class AppController : Application() {
@@ -16,5 +17,6 @@ class AppController : Application() {
     override fun onCreate() {
         super.onCreate()
         appContext = applicationContext
+        Tapsell.initialize(this, "tatrrmtctbpkbkaegpjksodkpcqflfhdcddaafsegaehqgfeamdllhrceqkntgktpoqbfh")
     }
 }

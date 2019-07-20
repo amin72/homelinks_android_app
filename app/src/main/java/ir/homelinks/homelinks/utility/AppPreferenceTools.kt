@@ -18,7 +18,7 @@ class AppPreferenceTools(val context: Context) {
     }
 
 
-    fun saveUserAuthenticationInfo(authentication: AuthenticationModel) {
+    fun saveUserAuthentication(authentication: AuthenticationModel) {
         saveUserInfo(authentication.user)
         saveUserToken(authentication.token)
     }
@@ -41,8 +41,39 @@ class AppPreferenceTools(val context: Context) {
     }
 
 
+    fun saveCredential(username: String, password: String, rememberCredential: Boolean=false) {
+        preferences.edit()
+            .putString(context.getString(R.string.pref_user_name), username)
+            .putString(context.getString(R.string.pref_user_pass), password)
+            .putBoolean(context.getString(R.string.pref_remember_credential), rememberCredential)
+            .apply()
+    }
+
+
+    fun removeCredentials() {
+        preferences.edit()
+            .remove(context.getString(R.string.pref_user_name))
+            .remove(context.getString(R.string.pref_user_pass))
+            .remove(context.getString(R.string.pref_remember_credential))
+            .apply()
+    }
+
+
     fun getUserName(): String {
         return preferences.getString(context.getString(R.string.pref_user_name), "")
+    }
+
+
+    fun getUserCredentials(): Map<String, String> {
+        val username = preferences.getString(context.getString(R.string.pref_user_name), "")
+        val password = preferences.getString(context.getString(R.string.pref_user_pass), "")
+        val isChecked = preferences.getBoolean(
+            context.getString(R.string.pref_remember_credential), false).toString()
+
+        return mapOf<String, String>(
+            context.getString(R.string.pref_user_name) to username,
+            context.getString(R.string.pref_user_pass) to password,
+            context.getString(R.string.pref_remember_credential) to isChecked)
     }
 
 
@@ -64,6 +95,16 @@ class AppPreferenceTools(val context: Context) {
 
 
     fun isAuthorized(): Boolean {
-        return getUserToken().equals(STRING_PREF_UNAVAILABLE).not()
+        return (getUserToken() == STRING_PREF_UNAVAILABLE).not()
+    }
+
+
+    fun setLanguage(lang: String) {
+        preferences.edit().putString(context.getString(R.string.lang), lang).apply()
+    }
+
+
+    fun getLanguage(): String {
+        return preferences.getString(context.getString(R.string.lang), context.getString(R.string.lang_fa))
     }
 }

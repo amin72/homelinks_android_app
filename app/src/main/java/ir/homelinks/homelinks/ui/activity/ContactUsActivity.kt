@@ -3,15 +3,17 @@ package ir.homelinks.homelinks.ui.activity
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import ir.homelinks.homelinks.R
-import ir.homelinks.homelinks.model.ChoiceModel
 import ir.homelinks.homelinks.model.contact_us.ContactUsModel
 import ir.homelinks.homelinks.model.contact_us.ContactUsOptions
 import ir.homelinks.homelinks.utility.AppController
+import ir.homelinks.homelinks.utility.ClientConstants
 import ir.homelinks.homelinks.utility.LinkUtility
 import ir.homelinks.homelinks.utility.Messages
 import kotlinx.android.synthetic.main.activity_contact_us.*
@@ -32,7 +34,7 @@ class ContactUsActivity : AppCompatActivity() {
 
         submit_contact_us_button.setOnClickListener {
 
-            val type = contact_us_type_spinner.selectedItem.toString().toLowerCase()
+            val type = LinkUtility.translate(contact_us_type_spinner.selectedItem.toString().toLowerCase())
             val email = email_text.text.toString()
             val description = description_text.text.toString()
             val contactUs = ContactUsModel(type, email, description)
@@ -61,17 +63,14 @@ class ContactUsActivity : AppCompatActivity() {
 
                 callContactUs.enqueue(object : Callback<ContactUsModel> {
                     override fun onFailure(call: Call<ContactUsModel>, t: Throwable) {
-                        Toast.makeText(
-                            baseContext,
-                            getString(R.string.failed_connect_to_server).toString(),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(baseContext,
+                            getString(R.string.failed_connect_to_server).toString(), Toast.LENGTH_SHORT).show()
                     }
 
                     override fun onResponse(call: Call<ContactUsModel>, response: Response<ContactUsModel>) {
                         if (response.isSuccessful) {
-                            val result = response.body()!!
-                            Toast.makeText(baseContext, result.type, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(baseContext, getString(R.string.message_sent), Toast.LENGTH_SHORT).show()
+                            LinkUtility.goHome(baseContext)
                         } else {
                             val errors = Messages.getErrors(
                                 response, listOf("email", "description", "non_field_errors")
@@ -120,22 +119,29 @@ class ContactUsActivity : AppCompatActivity() {
             ) {
 
                 if (response.isSuccessful) {
-                    val report = response.body()!!
+                    val contactUs = response.body()!!
+                    var contactUsChoices = mutableListOf<String>()
 
+                    for (choice in contactUs.actions.POST.type.choices) {
+                        if (LinkUtility.getLanguage(baseContext) == ClientConstants.FARSI_LANGUAGE) {
+                            contactUsChoices.add(LinkUtility.translate(choice.value))
+                        } else {
+                            contactUsChoices.add(choice.value)
+                        }
+                    }
 
-                    ArrayAdapter<ChoiceModel>(
+                    ArrayAdapter<String>(
                         baseContext,
                         android.R.layout.simple_spinner_item,
-                        report.actions.POST.type.choices
+                        contactUsChoices
                     ).also { adapter ->
                         // Specify the layout to use when the list of choices appears
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         // Apply the adapter to the spinner
                         contact_us_type_spinner.adapter = adapter
                     }
-
                 } else {
-                    Toast.makeText(baseContext, getString(R.string.failed_fetch_contact_us_options), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, getString(R.string.failed_fetch_data), Toast.LENGTH_SHORT).show()
                 }
             }
         })

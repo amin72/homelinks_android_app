@@ -62,6 +62,10 @@
             android:id="@+id/add_new_link"/>
 
     <item
+            android:title="@string/search"
+            android:id="@+id/search_all_links"/>
+
+    <item
             android:title="@string/categories"
             android:id="@+id/categories"/>
 

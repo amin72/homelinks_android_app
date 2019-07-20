@@ -72,11 +72,10 @@ class UserChangePassword : AppCompatActivity() {
                             ).show()
                         }
 
-                        override fun onResponse(call: Call<ResponseModel>,
-                            response: Response<ResponseModel>) {
+                        override fun onResponse(call: Call<ResponseModel>, response: Response<ResponseModel>) {
                             if (response.isSuccessful) {
-                                val response = response.body()!!
-                                Toast.makeText(baseContext, response.detail, Toast.LENGTH_SHORT).show()
+                                val userResponse = response.body()!!
+                                Toast.makeText(baseContext, userResponse.detail, Toast.LENGTH_SHORT).show()
                             } else {
                                 val errors = Messages.getErrors(response,
                                     listOf("new_password1", "new_password2", "non_field_errors"))

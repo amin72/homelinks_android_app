@@ -8,8 +8,10 @@ import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.squareup.picasso.Picasso
@@ -40,11 +42,15 @@ class GroupCreateOrUpdateActivity : AppCompatActivity() {
 
 
         create_group_layout.setOnClickListener(null)
-        create_group_toolbar.title = getString(R.string.create_group)
+        create_group_toolbar.title = getString(R.string.add_group)
         setSupportActionBar(create_group_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         appPreference = AppPreferenceTools(baseContext)
+
+        LinkUtility.removeErrors(title_input_layout, title_text)
+        LinkUtility.removeErrors(url_input_layout, url_text)
+        LinkUtility.removeErrors(description_input_layout, description_text)
 
         // if slug is provided do update,
         // else create group
@@ -141,10 +147,8 @@ class GroupCreateOrUpdateActivity : AppCompatActivity() {
                                         application_spinner.setSelection(groupApplicationPosition)
 
                                     } else {
-                                        Toast.makeText(
-                                            baseContext, getString(R.string.unable_to_fetch_group),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        Toast.makeText(baseContext, getString(R.string.unable_to_fetch_group),
+                                            Toast.LENGTH_SHORT).show()
                                     }
                                 }
                             })
@@ -156,14 +160,14 @@ class GroupCreateOrUpdateActivity : AppCompatActivity() {
                     submit_group_button.setOnClickListener {
 
                         val token = "token ${appPreference.getUserToken()}"
-                        val application = application_spinner.selectedItem.toString().toLowerCase()
+                        val application = LinkUtility.translate(application_spinner.selectedItem.toString().toLowerCase())
                         val title = title_text.text.toString()
                         val url = url_text.text.toString().toLowerCase()
                         val category = category_spinner.selectedItem
                         val categoryId = (category as CategoryModel).id
                         val description = description_text.text.toString()
 
-                        val defaultApplication = getString(R.string.default_group_application).toLowerCase()
+                        val defaultApplication = getString(R.string.default_application).toLowerCase()
                         var showToastFlag = 0
 
                         // use slug.isEmpty() to distinguish create from update action
@@ -206,10 +210,8 @@ class GroupCreateOrUpdateActivity : AppCompatActivity() {
                             if (imageUri == Uri.EMPTY) {
                                 if (slug.isEmpty()) {
                                     if (showToastFlag == 0) {
-                                        Toast.makeText(
-                                            baseContext, getString(R.string.provide_image),
-                                            Toast.LENGTH_LONG
-                                        ).show()
+                                        Toast.makeText(baseContext, getString(R.string.provide_image),
+                                            Toast.LENGTH_LONG).show()
                                     }
                                 }
                             }
@@ -227,7 +229,7 @@ class GroupCreateOrUpdateActivity : AppCompatActivity() {
                             val requestFile: RequestBody
 
                             if (imageUri != Uri.EMPTY) {
-                                imagePath = FileUtility.getPath(imageUri)
+                                imagePath = imageUri.path // FileUtility.getPath(imageUri)
                                 file = File(imagePath)
                                 requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
                                 image = MultipartBody.Part.createFormData("image", file.name, requestFile)
@@ -274,10 +276,9 @@ class GroupCreateOrUpdateActivity : AppCompatActivity() {
 
         callUpdateGroup.enqueue(object : Callback<GroupModel> {
             override fun onFailure(call: Call<GroupModel>, t: Throwable) {
-                Toast.makeText(
-                    baseContext, getString(R.string.failed_connect_to_server).toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(baseContext, getString(R.string.failed_connect_to_server).toString(),
+                    Toast.LENGTH_SHORT).show()
+                Log.d("-------", t.message)
             }
 
             override fun onResponse(call: Call<GroupModel>, response: Response<GroupModel>) {
@@ -290,7 +291,7 @@ class GroupCreateOrUpdateActivity : AppCompatActivity() {
                     startActivity(intent)
                     finish()
                 } else {
-                    managerErrors(response)
+                    manageErrors(response)
                 }
             }
         })
@@ -322,7 +323,7 @@ class GroupCreateOrUpdateActivity : AppCompatActivity() {
                     startActivity(Intent(baseContext, UserLinksActivity::class.java))
                     finish()
                 } else {
-                    managerErrors(response)
+                    manageErrors(response)
                 }
             }
         })
@@ -355,7 +356,7 @@ class GroupCreateOrUpdateActivity : AppCompatActivity() {
     }
 
 
-    private fun managerErrors(response: Response<GroupModel>) {
+    private fun manageErrors(response: Response<GroupModel>) {
         val errors = Messages.getErrors(
             response, listOf(
                 "application", "title", "url",

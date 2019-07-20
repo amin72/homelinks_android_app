@@ -48,16 +48,14 @@ class UserLinksFragment : Fragment() {
                 getLinks()
             }
         } else {
-            Toast.makeText(context, "Link cannot be empty!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.link_type_not_set),
+                Toast.LENGTH_SHORT).show()
         }
     }
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_user_links, container, false)
     }
@@ -143,17 +141,11 @@ class UserLinksFragment : Fragment() {
         val call = AppController.apiInterface.getUsersLinks(token, link, page)
 
         call.enqueue(object : Callback<LinkResults> {
-
             override fun onFailure(call: Call<LinkResults>, t: Throwable) {
                 Toast.makeText(context, "Failed\n${t.message}", Toast.LENGTH_LONG).show()
             }
 
-
-            override fun onResponse(
-                call: Call<LinkResults>,
-                response: Response<LinkResults>
-            ) {
-
+            override fun onResponse(call: Call<LinkResults>, response: Response<LinkResults>) {
                 if (response.isSuccessful) {
                     val links = response.body()!!
                     linkAdapter.addLinks(links.results)

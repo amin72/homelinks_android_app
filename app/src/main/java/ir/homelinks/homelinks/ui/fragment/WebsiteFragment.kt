@@ -112,9 +112,6 @@ class WebsiteFragment : Fragment() {
                     setupRecyclerView(links.results)
                     totalItems = links.count // set total items
                     receivedItems = links.results.size // set received items
-                } else {
-                    Toast.makeText(context, getString(R.string.failed_retrieve_links),
-                        Toast.LENGTH_LONG).show()
                 }
             }
         })
@@ -143,9 +140,6 @@ class WebsiteFragment : Fragment() {
                     // increment receivedItems each time new links were received
                     receivedItems += links.results.size
                     isLoading = false
-                } else {
-                    Toast.makeText(context, getString(R.string.failed_retrieve_links),
-                        Toast.LENGTH_LONG).show()
                 }
             }
         })

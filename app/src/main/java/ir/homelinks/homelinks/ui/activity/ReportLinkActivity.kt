@@ -6,15 +6,13 @@ import android.support.design.widget.TextInputLayout
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import ir.homelinks.homelinks.R
-import ir.homelinks.homelinks.model.ChoiceModel
 import ir.homelinks.homelinks.model.report_links.ReportLinkModel
 import ir.homelinks.homelinks.model.report_links.ReportLinkOptions
-import ir.homelinks.homelinks.utility.AppController
-import ir.homelinks.homelinks.utility.LinkUtility
-import ir.homelinks.homelinks.utility.Messages
+import ir.homelinks.homelinks.utility.*
 import kotlinx.android.synthetic.main.activity_report_link.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,9 +30,12 @@ class ReportLinkActivity : AppCompatActivity() {
         setSupportActionBar(report_link_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        submit_report_button.setOnClickListener {
+        LinkUtility.removeErrors(email_input_layout, email_text)
+        LinkUtility.removeErrors(description_input_layout, description_text)
 
-            val type = report_type_spinner.selectedItem.toString().toLowerCase()
+        submit_report_button.setOnClickListener {
+            val type = LinkUtility.translate(report_type_spinner.selectedItem.toString().toLowerCase())
+
             val email = email_text.text.toString()
             val description = description_text.text.toString()
             val report = ReportLinkModel(type, email, description)
@@ -64,18 +65,13 @@ class ReportLinkActivity : AppCompatActivity() {
 
                         callReportLink.enqueue(object : Callback<ReportLinkModel> {
                             override fun onFailure(call: Call<ReportLinkModel>, t: Throwable) {
-                                Toast.makeText(
-                                    baseContext,
-                                    getString(R.string.failed_connect_to_server).toString(),
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                Toast.makeText(baseContext, getString(R.string.failed_connect_to_server).toString(),
+                                    Toast.LENGTH_SHORT).show()
                             }
 
                             override fun onResponse(call: Call<ReportLinkModel>, response: Response<ReportLinkModel>) {
                                 if (response.isSuccessful) {
-                                    val report = response.body()!!
-                                    Toast.makeText(baseContext, getString(R.string.submitted_report), Toast.LENGTH_LONG)
-                                        .show()
+                                    Toast.makeText(baseContext, getString(R.string.report_sent), Toast.LENGTH_LONG).show()
                                     finish()
                                 } else {
                                     val errors = Messages.getErrors(
@@ -120,28 +116,32 @@ class ReportLinkActivity : AppCompatActivity() {
                 ).show()
             }
 
-            override fun onResponse(
-                call: Call<ReportLinkOptions>,
-                response: Response<ReportLinkOptions>
-            ) {
-
+            override fun onResponse(call: Call<ReportLinkOptions>,
+                response: Response<ReportLinkOptions>) {
                 if (response.isSuccessful) {
                     val report = response.body()!!
+                    var reportChoices = mutableListOf<String>()
 
+                    for (choice in report.actions.POST.type.choices) {
+                        if (LinkUtility.getLanguage(baseContext) == ClientConstants.FARSI_LANGUAGE) {
+                            reportChoices.add(LinkUtility.translate(choice.value))
+                        } else {
+                            reportChoices.add(choice.value)
+                        }
+                    }
 
-                    ArrayAdapter<ChoiceModel>(
+                    ArrayAdapter<String>(
                         baseContext,
                         android.R.layout.simple_spinner_item,
-                        report.actions.POST.type.choices
+                        reportChoices
                     ).also { adapter ->
                         // Specify the layout to use when the list of choices appears
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         // Apply the adapter to the spinner
                         report_type_spinner.adapter = adapter
                     }
-
                 } else {
-                    Toast.makeText(baseContext, getString(R.string.failed_fetch_report_options), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, getString(R.string.failed_fetch_data), Toast.LENGTH_SHORT).show()
                 }
             }
         })

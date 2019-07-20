@@ -12,6 +12,7 @@
 
 
     <android.support.v7.widget.Toolbar
+            android:layoutDirection="ltr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
@@ -25,11 +26,9 @@
 
 
     <android.support.design.widget.TabLayout
-            android:background="@color/blue_500"
             app:tabMode="fixed"
             app:tabGravity="fill"
             app:tabIndicatorColor="@color/colorAccent"
-            app:background="@color/colorPrimary"
             android:id="@+id/group_list_tab_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/group_list_toolbar"
@@ -39,12 +38,13 @@
 
 
     <android.support.v4.view.ViewPager
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/group_list_tab_layout"
             android:id="@+id/group_list_view_pager"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/group_list_tab_layout">
     </android.support.v4.view.ViewPager>
 
 </android.support.constraint.ConstraintLayout>

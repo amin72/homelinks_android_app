@@ -9,6 +9,7 @@ import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.ResetPasswordModel
 import ir.homelinks.homelinks.model.ResponseModel
 import ir.homelinks.homelinks.utility.AppController
+import ir.homelinks.homelinks.utility.LinkUtility
 import ir.homelinks.homelinks.utility.Messages
 import kotlinx.android.synthetic.main.activity_reset_password.*
 import retrofit2.Call
@@ -26,6 +27,7 @@ class ResetPasswordActivity : AppCompatActivity() {
         setSupportActionBar(reset_password_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        LinkUtility.removeErrors(email_input_layout, email_text)
 
         reset_password_button.setOnClickListener {
             val email = email_text.text.toString()

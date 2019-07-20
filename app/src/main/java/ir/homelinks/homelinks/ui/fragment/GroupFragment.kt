@@ -114,9 +114,6 @@ class GroupFragment : Fragment() {
                     setupRecyclerView(links.results)
                     totalItems = links.count // set total items
                     receivedItems = links.results.size // set received items
-                } else {
-                    Toast.makeText(context, "Failed to retrieve links!",
-                        Toast.LENGTH_LONG).show()
                 }
             }
         })
@@ -145,9 +142,6 @@ class GroupFragment : Fragment() {
                     // increment receivedItems each time new links were received
                     receivedItems += links.results.size
                     isLoading = false
-                } else {
-                    Toast.makeText(context, "Failed to retrieve links!",
-                        Toast.LENGTH_LONG).show()
                 }
             }
         })

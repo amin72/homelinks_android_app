@@ -25,5 +25,5 @@ class UserModel() {
     lateinit var lastName: String
 
     @SerializedName("phone_number")
-    lateinit var phoneNumber: String
+    var phoneNumber = ""
 }

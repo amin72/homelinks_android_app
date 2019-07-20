@@ -3,12 +3,12 @@ package ir.homelinks.homelinks.adapter
 import android.content.Context
 import android.content.Intent
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.squareup.picasso.Picasso
-import de.hdodenhof.circleimageview.CircleImageView
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.LinkModel
 import ir.homelinks.homelinks.ui.activity.LinkDetailActivity
@@ -17,8 +17,7 @@ import ir.homelinks.homelinks.utility.LinkUtility
 import kotlinx.android.synthetic.main.link_list_row.view.*
 
 
-class LinkAdapter(private var context: Context,
-                  private val links: List<LinkModel>):
+class LinkAdapter(private var context: Context, links: List<LinkModel>):
     RecyclerView.Adapter<LinkAdapter.ViewHolder>(), Filterable {
 
     var linkList = links.toMutableList()
@@ -47,13 +46,26 @@ class LinkAdapter(private var context: Context,
         val thumbnailPath = "${ClientConstants.HOMELINKS_URL}${link.thumbnail}"
         Picasso.get().load(thumbnailPath).into(holder.thumbnail)
 
-        val createdAt = "${context.getString(R.string.created_at)}: ${LinkUtility.convertDate(link.created)}"
+        var date = link.created.split("T")[0]
+        if (LinkUtility.getLanguage(context) == context.getString(R.string.lang_fa)) {
+            date = LinkUtility.convertDate(link.created)
+        }
+
+        val createdAt = "${context.getString(R.string.created_at)}: $date"
         holder.created.text = createdAt
 
         if (link.status.isNotEmpty()) {
             holder.status.visibility = View.VISIBLE
-            val status = "${context.getString(R.string.status)}: ${link.status.capitalize()}"
-            holder.status.text = status
+
+            val status = when (link.status) {
+                context.getString(R.string.draft) -> context.getString(R.string.link_in_draft_mode)
+                context.getString(R.string.published) -> context.getString(R.string.link_in_published_mode)
+                context.getString(R.string.updated) -> context.getString(R.string.link_in_draft_mode)
+                else -> ""
+            }
+
+            var statusText = "${context.getString(R.string.status)}: $status"
+            holder.status.text = statusText
         }
 
         holder.itemView.setOnClickListener {
@@ -72,7 +84,7 @@ class LinkAdapter(private var context: Context,
 
 
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val title: TextView = view.link_title
+        var title: TextView = view.link_title
         val created: TextView = view.link_created
         val thumbnail: ImageView = view.link_thumbnail
         val status: TextView = view.status

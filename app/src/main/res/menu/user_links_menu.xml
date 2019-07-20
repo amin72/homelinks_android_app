@@ -39,7 +39,6 @@
             android:title="@string/links">
 
         <menu>
-
             <item
                     android:title="@string/websites"
                     android:id="@+id/websites"/>
@@ -61,6 +60,10 @@
     <item
             android:title="@string/add_new_link"
             android:id="@+id/add_new_link"/>
+
+    <item
+            android:title="@string/search"
+            android:id="@+id/search_all_links"/>
 
     <item
             android:title="@string/categories"

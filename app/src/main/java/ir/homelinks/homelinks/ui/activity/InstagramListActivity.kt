@@ -31,7 +31,6 @@ class InstagramListActivity : AppCompatActivity() {
     private var isLoading = false
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_instagram_list)
@@ -95,9 +94,6 @@ class InstagramListActivity : AppCompatActivity() {
                     setupRecyclerView(links.results)
                     totalItems = links.count // set total items
                     receivedItems = links.results.size // set received items
-                } else {
-                    Toast.makeText(baseContext, "Failed to retrieve channels!",
-                        Toast.LENGTH_LONG).show()
                 }
             }
         })
@@ -126,9 +122,6 @@ class InstagramListActivity : AppCompatActivity() {
                     // increment receivedItems each time new links were received
                     receivedItems += links.results.size
                     isLoading = false
-                } else {
-                    Toast.makeText(baseContext, "Failed to retrieve channels!",
-                        Toast.LENGTH_LONG).show()
                 }
             }
         })

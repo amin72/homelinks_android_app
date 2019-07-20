@@ -25,12 +25,11 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Log In</string>
-    <string name="login_2">Log in.</string>
+    <string name="login_2" translatable="false">Log in.</string>
     <string name="signup">Sign Up</string>
-    <string name="signup_2">Sign up.</string>
+    <string name="signup_2" translatable="false">Sign up.</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="forgot_login_details">Forgot your login details?</string>
-    <string name="get_help_sign_in">Get help sign in.</string>
     <string name="dont_have_account">Don\'t have an account?</string>
     <string name="username_cant_be_blank">Username cannot be blank</string>
     <string name="email_cant_be_blank">Email cannot be blank</string>
@@ -46,6 +45,7 @@
     <string name="pref_user_name" translatable="false">pref_user_name</string>
     <string name="pref_user_first_name" translatable="false">pref_user_first_name</string>
     <string name="pref_user_last_name" translatable="false">pref_user_last_name</string>
+    <string name="pref_user_pass" translatable="false">pref_user_pass</string>
 
 
     <!-- Texts -->
@@ -83,40 +83,40 @@
 
 
     <!-- Channel Applications Spinner -->
-    <string name="default_channel_application">(Select application name)</string>
+    <string name="default_application">(Select application name)</string>
     <string-array name="channel_applications">
-        <item>@string/default_channel_application</item>
-        <item>Telegram</item>
-        <item>Soroush</item>
-        <item>Gap</item>
-        <item>IGap</item>
-        <item>Eitaa</item>
+        <item>@string/default_application</item>
+        <item>@string/telegram</item>
+        <item>@string/soroush</item>
+        <item>@string/gap</item>
+        <item>@string/igap</item>
+        <item>@string/eitaa</item>
     </string-array>
 
 
     <!-- Group Applications Spinner -->
-    <string name="default_group_application">(Select application name)</string>
     <string-array name="group_applications">
-        <item>@string/default_group_application</item>
-        <item>Whatsapp</item>
-        <item>Telegram</item>
-        <item>Soroush</item>
-        <item>Gap</item>
-        <item>IGap</item>
-        <item>Eitaa</item>
+        <item>@string/default_application</item>
+        <item>@string/whatsapp</item>
+        <item>@string/telegram</item>
+        <item>@string/soroush</item>
+        <item>@string/gap</item>
+        <item>@string/igap</item>
+        <item>@string/eitaa</item>
     </string-array>
 
     <!-- Website types Spinner -->
     <string name="default_website_type">(Select website type)</string>
     <string-array name="website_types">
         <item>@string/default_website_type</item>
-        <item>Iranian</item>
-        <item>Foreign</item>
+        <item>@string/iranian</item>
+        <item>@string/foreign</item>
     </string-array>
 
     <!-- Link types Spinner -->
+    <string name="default_link_type">(Select link type)</string>
     <string-array name="link_types">
-        <item>(Select link type)</item>
+        <item>@string/default_link_type</item>
         <item>@string/website</item>
         <item>@string/channel</item>
         <item>@string/group</item>
@@ -124,7 +124,6 @@
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="my_channels">My Channels</string>
     <string name="my_groups">My Groups</string>
     <string name="my_instagrams">My Instagrams</string>
@@ -132,19 +131,22 @@
     <string name="categories">Categories</string>
 
     <string name="about_us_text">
-        همانطور که می دانید امروزه معرفی و پیدا کردن سریع و به موقع سایت ها، کانال ها، گروه ها و .... در همه ی ضمینه ها یکجا و جامع، مخصوصا در حوزه ی کسب و کارهای جدید یک امر بسیار مهم است. به همین دلیل گروه خانه لینک ها با راه اندازی جامع ترین و هوشمند ترین اپلیکیشن در زمینه ی معرفی لینک ها در نظر دارد در این امر نقش خود را به خوبی ایفا کرده و کمک بسزایی نسبت به شما کاربران محترم انجام دهد.
+        As you know, it is very important to introduce and mention websites, channels, groups, instagram pages in all
+        aspects, especially in the area of new businesses. For this reason, the HomeLinks Group, with the launch of the
+        most comprehensive and smartest application in the field of linking, intends to play its role well and do a lot
+        of help to you respectable users.
     </string>
 
     <string name="homelinks_address">Homelinks website: https://homelinks.ir</string>
-    <string name="create_channel">Create Channel</string>
-    <string name="create_group">Create Group</string>
-    <string name="create_instagram">Create Instagram</string>
-    <string name="create_website">Create Website</string>
+    <string name="add_channel">Create Channel</string>
+    <string name="add_group">Create Group</string>
+    <string name="add_instagram">Create Instagram</string>
+    <string name="add_website">Create Website</string>
     <string name="report_link">Report link</string>
     <string name="report">Report</string>
     <string name="join">Join</string>
     <string name="view_join">View/Join</string>
-    <string name="submitted_report">Report was successfully submitted.</string>
+    <string name="report_sent">Report sent</string>
     <string name="this_field_cant_be_blank">This field cannot be blank</string>
     <string name="change_password">Change password</string>
     <string name="links">Links</string>
@@ -156,7 +158,7 @@
     <string name="edit_account">Edit account</string>
     <string name="my_links">My links</string>
     <string name="reset_your_password">Reset your password</string>
-    <string name="sign_out">Sign out</string>
+    <string name="sign_out">Sign Out</string>
     <string name="link_updated">Your link was updated successfully</string>
     <string name="link_created">Your link was created</string>
     <string name="link_removed">Link was removed successfully</string>
@@ -188,11 +190,49 @@
     <string name="failed_update_channel">Failed to update channel</string>
     <string name="failed_update_instagram">Failed to update instagram</string>
     <string name="failed_send_message">Failed to send message</string>
-    <string name="failed_fetch_report_options">Failed to fetch report options</string>
-    <string name="failed_fetch_contact_us_options">Failed to fetch contact us options</string>
+    <string name="failed_fetch_data">Failed to fetch report options</string>
     <string name="failed_retrieve_links">Failed to retrieve links</string>
     <string name="dont_have_permission">Can not pick photo without this permission</string>
     <string name="report_type">Report type</string>
     <string name="link_or_slug_not_set">Link or slug not set</string>
+    <string name="change_language">Change language</string>
+    <string name="english_language" translatable="false">English</string>
+    <string name="farsi_language" translatable="false">فارسی</string>
+    <string name="link_in_draft_mode">Pending manager approval</string>
+    <string name="link_in_published_mode">Published</string>
+
+    <string name="inappropriate_content">Inappropriate content</string>
+    <string name="mismatched_title_and_description">Mismatched title and description</string>
+    <string name="broken_link">Broken link</string>
+    <string name="lang" translatable="false">pref_lang</string>
+    <string name="lang_fa" translatable="false">fa</string>
+    <string name="lang_en" translatable="false">en</string>
+    <string name="key_website" translatable="false">website</string>
+    <string name="key_channel" translatable="false">channel</string>
+    <string name="key_group" translatable="false">group</string>
+    <string name="key_instagram" translatable="false">instagram</string>
+    <string name="iranian">Iranian</string>
+    <string name="foreign">Foreign</string>
+    <string name="telegram">Telegram</string>
+    <string name="soroush">Soroush</string>
+    <string name="gap">Gap</string>
+    <string name="igap">IGap</string>
+    <string name="eitaa">Eitaa</string>
+    <string name="whatsapp">Whatsapp</string>
+    <string name="draft" translatable="false">draft</string>
+    <string name="published" translatable="false">published</string>
+    <string name="updated" translatable="false">updated</string>
+    <string name="link_detail_image">Link Detail Image</string>
+    <string name="remember_login_information">remember my login information</string>
+    <string name="pref_remember_credential" translatable="false">pref_remember_credential</string>
+    <string name="account_created">Account created</string>
+    <string name="message_sent">Message sent</string>
+    <string name="link_type_not_set">Link type not type</string>
+    <string name="banner" translatable="false">Banner</string>
+    <string name="description_of_the_ad" translatable="false">Description of the ad.</string>
+    <string name="ad_button" translatable="false">Click</string>
+    <string name="sponsored" translatable="false">Sponsored</string>
+    <string name="logo" translatable="false">Logo</string>
+    <string name="user_not_authorized">User is not authorized</string>
 
 </resources>

@@ -18,6 +18,8 @@ import java.util.Locale;
 
 
 public class FileUtility {
+    private final static String TAG = "FileUtility";
+
 
     private static File getAlbumDir() {
         File storageDir = null;
@@ -108,7 +110,7 @@ public class FileUtility {
                 return uri.getPath();
             }
         } catch (Exception e) {
-            Log.d("android_utilities", "the error is " + e);
+            Log.d(TAG, "the error is " + e);
         }
         return null;
     }

@@ -8,9 +8,9 @@ import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.squareup.picasso.Picasso
@@ -41,11 +41,15 @@ class WebsiteCreateOrUpdateActivity : AppCompatActivity() {
         setContentView(R.layout.activity_create_or_update_website)
 
         create_website_layout.setOnClickListener(null)
-        create_website_toolbar.title = getString(R.string.create_website)
+        create_website_toolbar.title = getString(R.string.add_website)
         setSupportActionBar(create_website_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         appPreference = AppPreferenceTools(this)
+
+        LinkUtility.removeErrors(title_input_layout, title_text)
+        LinkUtility.removeErrors(url_input_layout, url_text)
+        LinkUtility.removeErrors(description_input_layout, description_text)
 
         // if slug is provided do update,
         // else create website
@@ -150,7 +154,7 @@ class WebsiteCreateOrUpdateActivity : AppCompatActivity() {
                         val token = "token ${appPreference.getUserToken()}"
                         val title = title_text.text.toString()
                         val url = url_text.text.toString()
-                        val type = type_spinner.selectedItem.toString().toLowerCase()
+                        val type = LinkUtility.translate(type_spinner.selectedItem.toString().toLowerCase())
                         val category = category_spinner.selectedItem
                         val categoryId = (category as CategoryModel).id
                         val description = description_text.text.toString()

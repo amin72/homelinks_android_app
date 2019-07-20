@@ -4,12 +4,17 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
+import android.support.v7.widget.AppCompatEditText
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.widget.Toast
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.TokenModel
 import ir.homelinks.homelinks.model.UserModel
 import ir.homelinks.homelinks.utility.AppController
 import ir.homelinks.homelinks.utility.AppPreferenceTools
+import ir.homelinks.homelinks.utility.LinkUtility
 import ir.homelinks.homelinks.utility.Messages
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import retrofit2.Call
@@ -19,18 +24,23 @@ import retrofit2.Response
 
 class SignInActivity : AppCompatActivity() {
 
+    lateinit var appPreferenceTools: AppPreferenceTools
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
-
 
         sign_in_layout.setOnClickListener(null)
         sign_in_toolbar.title = getString(R.string.sign_in)
         setSupportActionBar(sign_in_toolbar)
 
+        appPreferenceTools = AppPreferenceTools(this)
+
+        LinkUtility.removeErrors(username_input_layout, username_text)
+        LinkUtility.removeErrors(password_input_layout, password_text)
 
         login_button.setOnClickListener {
-
             val username = username_text.text.toString()
             val password = password_text.text.toString()
 
@@ -64,18 +74,12 @@ class SignInActivity : AppCompatActivity() {
                 call.enqueue(object : Callback<TokenModel> {
                     override fun onFailure(call: Call<TokenModel>, t: Throwable) {
                         // show a dialog instead of toast
-                        Toast.makeText(
-                            baseContext,
-                            getString(R.string.failed_connect_to_server).toString(),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(baseContext,
+                            getString(R.string.failed_connect_to_server).toString(), Toast.LENGTH_SHORT).show()
+                        Log.d("-----error login", t.message)
                     }
 
-                    override fun onResponse(
-                        call: Call<TokenModel>,
-                        response: Response<TokenModel>
-                    ) {
-
+                    override fun onResponse(call: Call<TokenModel>, response: Response<TokenModel>) {
                         if (response.isSuccessful) {
                             username_input_layout.isErrorEnabled = false
                             password_input_layout.isErrorEnabled = false
@@ -155,4 +159,29 @@ class SignInActivity : AppCompatActivity() {
         field.isErrorEnabled = true
         field.error = message
     }
+
+
+    override fun onPause() {
+        if (remember_checkbox.isChecked) {
+            appPreferenceTools.saveCredential(username_text.text.toString(),
+                password_text.text.toString(), remember_checkbox.isChecked)
+        } else {
+            appPreferenceTools.removeCredentials()
+        }
+
+        super.onPause()
+    }
+
+
+    override fun onResume() {
+        val credentials = appPreferenceTools.getUserCredentials()
+        username_text.setText(credentials[getString(R.string.pref_user_name)])
+        password_text.setText(credentials[getString(R.string.pref_user_pass)])
+        val isChecked = credentials[getString(R.string.pref_remember_credential)]
+        remember_checkbox.isChecked = isChecked == "true"
+        super.onResume()
+    }
+
+
+
 }

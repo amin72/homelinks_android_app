@@ -40,11 +40,15 @@ class InstagramCreateOrUpdateActivity : AppCompatActivity() {
 
 
         create_instagram_layout.setOnClickListener(null)
-        create_instagram_toolbar.title = getString(R.string.create_instagram)
+        create_instagram_toolbar.title = getString(R.string.add_instagram)
         setSupportActionBar(create_instagram_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         appPreference = AppPreferenceTools(baseContext)
+
+        LinkUtility.removeErrors(title_input_layout, title_text)
+        LinkUtility.removeErrors(page_id_input_layout, page_id_text)
+        LinkUtility.removeErrors(description_input_layout, description_text)
 
         // if slug is provided do update,
         // else create instagram

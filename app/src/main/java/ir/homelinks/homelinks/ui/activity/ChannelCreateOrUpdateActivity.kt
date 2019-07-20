@@ -11,6 +11,7 @@ import android.support.design.widget.TextInputLayout
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.squareup.picasso.Picasso
@@ -40,11 +41,15 @@ class ChannelCreateOrUpdateActivity : AppCompatActivity() {
         setContentView(R.layout.activity_create_or_update_channel)
 
         create_channel_layout.setOnClickListener(null)
-        create_channel_toolbar.title = getString(R.string.create_channel)
+        create_channel_toolbar.title = getString(R.string.add_channel)
         setSupportActionBar(create_channel_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         appPreference = AppPreferenceTools(baseContext)
+
+        LinkUtility.removeErrors(title_input_layout, title_text)
+        LinkUtility.removeErrors(channel_id_input_layout, channel_id_text)
+        LinkUtility.removeErrors(description_input_layout, description_text)
 
         // if slug is provided do update,
         // else create channel
@@ -152,14 +157,14 @@ class ChannelCreateOrUpdateActivity : AppCompatActivity() {
                     submit_channel_button.setOnClickListener {
 
                         val token = "token ${appPreference.getUserToken()}"
-                        val application = application_spinner.selectedItem.toString().toLowerCase()
+                        val application = LinkUtility.translate(application_spinner.selectedItem.toString().toLowerCase())
                         val title = title_text.text.toString()
                         val channelId = channel_id_text.text.toString().toLowerCase()
                         val category = category_spinner.selectedItem
                         val categoryId = (category as CategoryModel).id
                         val description = description_text.text.toString()
 
-                        val defaultApplication = getString(R.string.default_channel_application).toLowerCase()
+                        val defaultApplication = getString(R.string.default_application).toLowerCase()
                         var showToastFlag = 0
 
                         // use slug.isEmpty() to distinguish create from update action

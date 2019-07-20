@@ -29,16 +29,25 @@ class GroupListActivity : AppCompatActivity() {
         viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
         viewPagerAdapter.notifyDataSetChanged()
 
-        viewPagerAdapter.addFragment(GroupFragment.newInstance(""), "All")
-        viewPagerAdapter.addFragment(GroupFragment.newInstance("whatsapp"), "Whatsapp")
-        viewPagerAdapter.addFragment(GroupFragment.newInstance("telegram"), "Telegram")
-        viewPagerAdapter.addFragment(GroupFragment.newInstance("soroush"), "Soroush")
-        viewPagerAdapter.addFragment(GroupFragment.newInstance("gap"), "Gap")
-        viewPagerAdapter.addFragment(GroupFragment.newInstance("igap"), "IGap")
-        viewPagerAdapter.addFragment(GroupFragment.newInstance("eitaa"), "Eitaa")
+        viewPagerAdapter.addFragment(GroupFragment.newInstance(""), getString(R.string.all))
+        viewPagerAdapter.addFragment(GroupFragment.newInstance("whatsapp"), "")
+        viewPagerAdapter.addFragment(GroupFragment.newInstance("telegram"), "")
+        viewPagerAdapter.addFragment(GroupFragment.newInstance("soroush"), "")
+        viewPagerAdapter.addFragment(GroupFragment.newInstance("gap"), "")
+        viewPagerAdapter.addFragment(GroupFragment.newInstance("igap"), "")
+        viewPagerAdapter.addFragment(GroupFragment.newInstance("eitaa"), "")
 
         group_list_view_pager.adapter = viewPagerAdapter
         group_list_tab_layout.setupWithViewPager(group_list_view_pager)
+
+        try {
+            group_list_tab_layout.getTabAt(1)?.setIcon(R.mipmap.whatsapp)
+            group_list_tab_layout.getTabAt(2)?.setIcon(R.mipmap.telegram)
+            group_list_tab_layout.getTabAt(3)?.setIcon(R.mipmap.soroush)
+            group_list_tab_layout.getTabAt(4)?.setIcon(R.mipmap.gap)
+            group_list_tab_layout.getTabAt(5)?.setIcon(R.mipmap.igap)
+            group_list_tab_layout.getTabAt(6)?.setIcon(R.mipmap.eitaa)
+        } catch (e: Exception) {}
     }
 
 

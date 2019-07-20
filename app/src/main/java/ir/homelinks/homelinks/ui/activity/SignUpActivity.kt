@@ -10,6 +10,7 @@ import android.widget.Toast
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.UserModel
 import ir.homelinks.homelinks.utility.AppController
+import ir.homelinks.homelinks.utility.LinkUtility
 import ir.homelinks.homelinks.utility.Messages
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import retrofit2.Call
@@ -27,6 +28,10 @@ class SignUpActivity : AppCompatActivity(), TextWatcher {
         sign_up_toolbar.title = getString(R.string.signup)
         setSupportActionBar(sign_up_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        LinkUtility.removeErrors(username_input_layout, username_text)
+        LinkUtility.removeErrors(email_input_layout, email_text)
+        LinkUtility.removeErrors(password_input_layout, password_text)
 
         sign_up_button.setOnClickListener {
 
@@ -82,9 +87,8 @@ class SignUpActivity : AppCompatActivity(), TextWatcher {
                             password_input_layout.isErrorEnabled = false
 
                             val user = response.body()!!
-                            Toast.makeText(baseContext, user.username, Toast.LENGTH_SHORT).show()
-                            Toast.makeText(baseContext, user.email, Toast.LENGTH_SHORT).show()
-
+                            Toast.makeText(baseContext, getString(R.string.account_created), Toast.LENGTH_SHORT).show()
+                            finish()
                         } else {
 
                             val errors = Messages.getErrors(

@@ -28,15 +28,23 @@ class ChannelListActivity : AppCompatActivity() {
         viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
         viewPagerAdapter.notifyDataSetChanged()
 
-        viewPagerAdapter.addFragment(ChannelFragment.newInstance(""), "All")
-        viewPagerAdapter.addFragment(ChannelFragment.newInstance("telegram"), "Telegram")
-        viewPagerAdapter.addFragment(ChannelFragment.newInstance("soroush"), "Soroush")
-        viewPagerAdapter.addFragment(ChannelFragment.newInstance("gap"), "Gap")
-        viewPagerAdapter.addFragment(ChannelFragment.newInstance("igap"), "IGap")
-        viewPagerAdapter.addFragment(ChannelFragment.newInstance("eitaa"), "Eitaa")
+        viewPagerAdapter.addFragment(ChannelFragment.newInstance(""), getString(R.string.all))
+        viewPagerAdapter.addFragment(ChannelFragment.newInstance("telegram"), "")
+        viewPagerAdapter.addFragment(ChannelFragment.newInstance("soroush"), "")
+        viewPagerAdapter.addFragment(ChannelFragment.newInstance("gap"), "")
+        viewPagerAdapter.addFragment(ChannelFragment.newInstance("igap"), "")
+        viewPagerAdapter.addFragment(ChannelFragment.newInstance("eitaa"), "")
 
         channel_list_view_pager.adapter = viewPagerAdapter
         channel_list_tab_layout.setupWithViewPager(channel_list_view_pager)
+
+        try {
+            channel_list_tab_layout.getTabAt(1)?.setIcon(R.mipmap.telegram)
+            channel_list_tab_layout.getTabAt(2)?.setIcon(R.mipmap.soroush)
+            channel_list_tab_layout.getTabAt(3)?.setIcon(R.mipmap.gap)
+            channel_list_tab_layout.getTabAt(4)?.setIcon(R.mipmap.igap)
+            channel_list_tab_layout.getTabAt(5)?.setIcon(R.mipmap.eitaa)
+        } catch (e: Exception) {}
     }
 
 

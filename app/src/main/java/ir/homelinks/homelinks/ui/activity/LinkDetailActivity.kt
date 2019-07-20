@@ -5,6 +5,7 @@ import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -14,7 +15,11 @@ import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.model.LinkModel
 import ir.homelinks.homelinks.utility.AppController
 import ir.homelinks.homelinks.utility.AppPreferenceTools
+import ir.homelinks.homelinks.utility.ClientConstants
 import ir.homelinks.homelinks.utility.LinkUtility
+import ir.tapsell.sdk.AdRequestCallback
+import ir.tapsell.sdk.nativeads.TapsellNativeBannerManager
+import ir.tapsell.sdk.nativeads.TapsellNativeBannerViewManager
 import kotlinx.android.synthetic.main.activity_link_detail.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,7 +31,7 @@ class LinkDetailActivity : AppCompatActivity() {
     private lateinit var appPreference: AppPreferenceTools
     var alertDialog: AlertDialog? = null
     var alertBuilder: AlertDialog.Builder? = null
-    private lateinit var linkUrl: String
+    private lateinit var linkType: String
     private lateinit var slug: String
 
 
@@ -34,6 +39,7 @@ class LinkDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_link_detail)
 
+        link_detail_toolbar.title = getString(R.string.app_name)
         setSupportActionBar(link_detail_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -41,11 +47,11 @@ class LinkDetailActivity : AppCompatActivity() {
 
         val extras = intent.extras
         if (extras != null) {
-            linkUrl = extras.getString("link", "")
+            linkType = extras.getString("link", "")
             slug = extras.getString("slug", "")
 
-            if (linkUrl.isNotEmpty() && slug.isNotEmpty()) {
-                val call = AppController.apiInterface.linkDetail(linkUrl, slug)
+            if (linkType.isNotEmpty() && slug.isNotEmpty()) {
+                val call = AppController.apiInterface.linkDetail(linkType, slug)
 
                 call.enqueue(object: Callback<LinkModel> {
                     override fun onFailure(call: Call<LinkModel>, t: Throwable) {
@@ -58,8 +64,8 @@ class LinkDetailActivity : AppCompatActivity() {
                         if (response.isSuccessful) {
                             val link = response.body()!!
 
-                            // make delete and edit button visible for linkUrl's owner
-                            if (appPreference.isAuthorized() && appPreference.getUserName().equals(link.author.username)) {
+                            // make delete and edit button visible for the link's owner
+                            if (appPreference.isAuthorized() && (appPreference.getUserName() == link.author.username)) {
                                 action_layout.visibility = View.VISIBLE
                             }
 
@@ -75,27 +81,10 @@ class LinkDetailActivity : AppCompatActivity() {
                             Picasso.get().load(link.image)
                                 .into(link_image)
 
-
                             join_link_button.setOnClickListener {
-                                when (linkUrl) {
-                                    getString(R.string.website).toLowerCase() -> {
-                                        val uri = Uri.parse(link.url)
-                                        val intent = Intent(Intent.ACTION_VIEW, uri)
-                                        startActivity(intent)
-                                    }
-
-                                    getString(R.string.channel).toLowerCase() -> {
-                                        Toast.makeText(baseContext, "Channel!", Toast.LENGTH_SHORT).show()
-                                    }
-
-                                    getString(R.string.group).toLowerCase() -> {
-                                        Toast.makeText(baseContext, "Group!", Toast.LENGTH_SHORT).show()
-                                    }
-
-                                    getString(R.string.instagram).toLowerCase() -> {
-                                        Toast.makeText(baseContext, "Instagram!", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
+                                val uri = Uri.parse(link.url)
+                                val intent = Intent(Intent.ACTION_VIEW, uri)
+                                startActivity(intent)
                             }
                         }
                     }
@@ -103,32 +92,32 @@ class LinkDetailActivity : AppCompatActivity() {
 
                 report_link_button.setOnClickListener {
                     val reportIntent = Intent(this, ReportLinkActivity::class.java)
-                    reportIntent.putExtra("link", linkUrl)
+                    reportIntent.putExtra("link", linkType)
                     reportIntent.putExtra("slug", slug)
                     startActivity(reportIntent)
                 }
 
                 edit_link_button.setOnClickListener {
-                    when (linkUrl) {
-                        getString(R.string.website).toLowerCase() -> {
+                    when (linkType) {
+                        getString(R.string.key_website) -> {
                             val intent = Intent(this, WebsiteCreateOrUpdateActivity::class.java)
                             intent.putExtra("slug", slug)
                             startActivity(intent)
                         }
 
-                        getString(R.string.channel).toLowerCase() -> {
+                        getString(R.string.key_channel) -> {
                             val intent = Intent(this, ChannelCreateOrUpdateActivity::class.java)
                             intent.putExtra("slug", slug)
                             startActivity(intent)
                         }
 
-                        getString(R.string.group).toLowerCase() -> {
+                        getString(R.string.key_group) -> {
                             val intent = Intent(this, GroupCreateOrUpdateActivity::class.java)
                             intent.putExtra("slug", slug)
                             startActivity(intent)
                         }
 
-                        getString(R.string.instagram).toLowerCase() -> {
+                        getString(R.string.key_instagram) -> {
                             val intent = Intent(this, InstagramCreateOrUpdateActivity::class.java)
                             intent.putExtra("slug", slug)
                             startActivity(intent)
@@ -143,10 +132,10 @@ class LinkDetailActivity : AppCompatActivity() {
                     alertBuilder?.setMessage(getString(R.string.you_want_to_delete_this_link))
 
                     // Delete button
-                    alertBuilder?.setPositiveButton(getString(R.string.delete) ) { dialog, which ->
+                    alertBuilder?.setPositiveButton(getString(R.string.delete) ) { _, _ ->
                         // user is sure so remove the linkUrl
                         val token = "token ${appPreference.getUserToken()}"
-                        val removeLinkCall = AppController.apiInterface.removeLink(token, linkUrl, slug)
+                        val removeLinkCall = AppController.apiInterface.removeLink(token, linkType, slug)
 
                         removeLinkCall.enqueue(object: Callback<Unit> {
                             override fun onFailure(call: Call<Unit>, t: Throwable) {
@@ -161,7 +150,7 @@ class LinkDetailActivity : AppCompatActivity() {
                     }
 
                     // Cancel button
-                    alertBuilder?.setNegativeButton(getString(R.string.cancel)) { dialog, which -> }
+                    alertBuilder?.setNegativeButton(getString(R.string.cancel)) { _, _ -> }
 
                     alertDialog = alertBuilder?.create()
                     alertDialog?.show()
@@ -170,6 +159,9 @@ class LinkDetailActivity : AppCompatActivity() {
         } else {
             Toast.makeText(baseContext, getString(R.string.link_or_slug_not_set), Toast.LENGTH_SHORT).show()
         }
+
+        // Advertisement
+        getTapsellAd()
     }
 
 
@@ -183,5 +175,36 @@ class LinkDetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         LinkUtility.handleMenuItem(this, item?.itemId)
         return super.onOptionsItemSelected(item)
+    }
+
+
+    private fun getTapsellAd() {
+        var nativeBannerViewManager: TapsellNativeBannerViewManager?
+
+        nativeBannerViewManager = TapsellNativeBannerManager.Builder()
+            .setParentView(adContainer)
+            .setContentViewTemplate(R.layout.tapsell_content_banner_ad_template)
+            .setAppInstallationViewTemplate(R.layout.tapsell_hamsan_ad_template)
+            .inflateTemplate(this)
+
+//        R.layout.tapsell_app_installation_banner_ad_template
+
+        TapsellNativeBannerManager.getAd(this, ClientConstants.TAPSEL_ZONE_ID,
+            object : AdRequestCallback {
+                override fun onResponse(adId: Array<String>) {
+                    runOnUiThread {
+                        TapsellNativeBannerManager.bindAd(
+                            this@LinkDetailActivity,
+                            nativeBannerViewManager,
+                            ClientConstants.TAPSEL_ZONE_ID,
+                            adId[0]
+                        )
+                    }
+                }
+
+                override fun onFailed(message: String) {
+                    Log.e("getTapsellAd onFailed", message)
+                }
+            })
     }
 }

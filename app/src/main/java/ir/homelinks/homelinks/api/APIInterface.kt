@@ -6,10 +6,10 @@ import ir.homelinks.homelinks.model.contact_us.ContactUsModel
 import ir.homelinks.homelinks.model.contact_us.ContactUsOptions
 import ir.homelinks.homelinks.model.group.GroupModel
 import ir.homelinks.homelinks.model.instagram.InstagramModel
-import ir.homelinks.homelinks.model.instagram.InstagramUpdateModel
 import ir.homelinks.homelinks.model.report_links.ReportLinkModel
 import ir.homelinks.homelinks.model.report_links.ReportLinkOptions
 import ir.homelinks.homelinks.model.website.WebsiteModel
+import ir.homelinks.homelinks.utility.ClientConstants
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -196,8 +196,11 @@ interface APIInterface {
     ): Call<ReportLinkModel>
 
 
-    @OPTIONS("{link}/{slug}/report_link/")
+    @OPTIONS("link/slug/report_link/")
     fun reportLinkChoices(): Call<ReportLinkOptions>
+
+    @OPTIONS("${ClientConstants.HOMELINKS_API_FA_URL}link/slug/report_link/")
+    fun reportLinkChoicesFa(): Call<ReportLinkOptions>
 
 
     @POST("contact/contact_us/")
@@ -206,6 +209,10 @@ interface APIInterface {
 
     @OPTIONS("contact/contact_us/")
     fun contactUsChoices(): Call<ContactUsOptions>
+
+
+    @OPTIONS("${ClientConstants.HOMELINKS_API_FA_URL}contact/contact_us/")
+    fun contactUsChoicesFa(): Call<ContactUsOptions>
 
 
     @POST("auth/password/change/")

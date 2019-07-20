@@ -3,25 +3,25 @@ package ir.homelinks.homelinks.ui.activity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import ir.homelinks.homelinks.R
 import ir.homelinks.homelinks.adapter.HorizontalLinkAdapter
 import ir.homelinks.homelinks.model.IndexResult
-import ir.homelinks.homelinks.utility.AppController
-import ir.homelinks.homelinks.utility.AppPreferenceTools
-import ir.homelinks.homelinks.utility.LinkUtility
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import ir.homelinks.homelinks.utility.*
 
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var appPreference: AppPreferenceTools
+    private lateinit var appPreferenceTools: AppPreferenceTools
     private lateinit var websitesAdapter: HorizontalLinkAdapter
     private lateinit var channelsAdapter: HorizontalLinkAdapter
     private lateinit var groupsAdapter: HorizontalLinkAdapter
@@ -32,17 +32,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        main_toolbar.title = getString(R.string.app_name)
         setSupportActionBar(main_toolbar)
 
-        appPreference = AppPreferenceTools(baseContext)
-
-        if (appPreference.isAuthorized()) {
-            setIndexItems()
-        } else {
-            startActivity(Intent(baseContext, SignInActivity::class.java))
-            finish()
-        }
-
+        appPreferenceTools = AppPreferenceTools(this)
+        userAuthorization()
 
         load_websites_button.setOnClickListener {
             startActivity(Intent(this, WebsiteListActivity::class.java))
@@ -59,6 +53,15 @@ class MainActivity : AppCompatActivity() {
         load_instagrams_button.setOnClickListener {
             startActivity(Intent(this, InstagramListActivity::class.java))
         }
+
+        swipeRefresh.setOnRefreshListener {
+            swipeRefresh.isRefreshing = true
+
+            Handler().postDelayed({
+                setIndexItems()
+                swipeRefresh.isRefreshing = false
+            }, 3000)
+        }
     }
 
 
@@ -69,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         call.enqueue(object: Callback<IndexResult> {
             override fun onFailure(call: Call<IndexResult>, t: Throwable) {
                 Toast.makeText(baseContext, getString(R.string.failed_connect_to_server), Toast.LENGTH_SHORT).show()
+//                Log.d("---error main", t.message)
             }
 
             override fun onResponse(call: Call<IndexResult>, response: Response<IndexResult>) {
@@ -105,10 +109,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        menuInflater.inflate(R.menu.main_menu, menu)
+//        return super.onCreateOptionsMenu(menu)
+//    }
 
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -117,10 +121,20 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+
     override fun onResume() {
         super.onResume()
+        userAuthorization()
+    }
 
-        if (appPreference.isAuthorized()) {
+
+    private fun userAuthorization() {
+        if (appPreferenceTools.isAuthorized()) {
             setIndexItems()
         } else {
             startActivity(Intent(baseContext, SignInActivity::class.java))

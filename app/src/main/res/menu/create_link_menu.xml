@@ -34,7 +34,6 @@
             android:title="@string/links">
 
         <menu>
-
             <item
                     android:title="@string/websites"
                     android:id="@+id/websites"/>
@@ -58,6 +57,10 @@
             android:id="@+id/add_new_link"
             android:icon="@drawable/ic_add_white_24dp"
             app:showAsAction="ifRoom"/>
+
+    <item
+            android:title="@string/search"
+            android:id="@+id/search_all_links"/>
 
     <item
             android:title="@string/categories"

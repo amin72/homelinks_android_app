@@ -61,6 +61,11 @@
 
     <item
             android:orderInCategory="3"
+            android:title="@string/search"
+            android:id="@+id/search_all_links"/>
+
+    <item
+            android:orderInCategory="3"
             android:title="@string/categories"
             android:id="@+id/categories"/>
 

@@ -7,6 +7,7 @@
             android:orientation="vertical"
             android:fillViewport="false">
 
+
     <android.support.constraint.ConstraintLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
@@ -14,9 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:context=".ui.activity.LinkDetailActivity"
-            android:id="@+id/link_detail_layout"
-            android:focusable="true"
-            android:focusableInTouchMode="true">
+            android:id="@+id/link_detail_layout">
 
 
         <android.support.v7.widget.Toolbar
@@ -34,51 +33,58 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
 
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/link_title"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="6dp"
+        <LinearLayout
+                android:paddingTop="4dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:paddingBottom="16dp"
+                android:background="@drawable/link_detail"
+                android:orientation="vertical"
+                android:id="@+id/link_detail_box"
                 app:layout_constraintTop_toBottomOf="@+id/link_detail_toolbar"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="6dp"
-                android:layout_marginTop="16dp"/>
-
-
-        <ImageView
-                app:layout_constraintTop_toBottomOf="@+id/link_title"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:id="@+id/link_image"
-                android:scaleType="centerCrop"
-                android:layout_marginTop="16dp"/>
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/link_title"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="6dp"
+                    app:layout_constraintTop_toBottomOf="@+id/link_detail_toolbar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginTop="8dp"/>
 
 
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/link_description"
-                android:padding="10dp"
-                app:layout_constraintTop_toBottomOf="@+id/link_image"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="6dp"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="6dp"
-                android:layout_marginTop="8dp"/>
+            <ImageView
+                    android:contentDescription="@string/link_detail_image"
+                    app:layout_constraintTop_toBottomOf="@+id/link_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:id="@+id/link_image"
+                    android:scaleType="centerCrop"
+                    android:layout_marginTop="16dp"/>
 
 
-        <View android:layout_width="match_parent"
-              android:layout_height="1dp"
-              android:background="@color/black"
-              app:layout_constraintTop_toBottomOf="@+id/link_description"
-              app:layout_constraintBottom_toTopOf="@+id/link_author"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintEnd_toEndOf="parent"
-              android:id="@+id/separator"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/link_description"
+                    android:padding="4dp"
+                    android:textSize="16sp"
+                    app:layout_constraintTop_toBottomOf="@+id/link_image"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="6dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginTop="8dp"/>
+
+        </LinearLayout>
 
 
         <TextView
@@ -87,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/link_author"
                 android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@+id/link_description"
+                app:layout_constraintTop_toBottomOf="@+id/link_detail_box"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="8dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -103,11 +109,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/link_author"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="6dp"
-                app:layout_constraintEnd_toStartOf="@+id/action_layout"
-                android:layout_marginEnd="6dp"/>
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
 
         <LinearLayout
+                android:layout_marginTop="12dp"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -116,10 +123,9 @@
                 android:layout_alignParentEnd="true"
                 android:gravity="end|center_vertical"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@+id/link_author"
+                app:layout_constraintTop_toBottomOf="@+id/link_created_at"
                 android:layout_marginBottom="16dp"
                 android:layout_marginEnd="4dp"
-                app:layout_constraintVertical_bias="0.2"
                 android:visibility="gone">
 
 
@@ -143,37 +149,68 @@
         </LinearLayout>
 
 
-        <android.support.v7.widget.AppCompatButton
-                android:text="@string/report"
-                android:textAllCaps="false"
-                android:id="@+id/report_link_button"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:background="@color/report_link"
-                android:textColor="@color/white"
-                android:layout_marginTop="12dp"
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:id="@+id/action_layout2"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:gravity="end|center_vertical"
+                android:orientation="horizontal"
                 android:layout_marginStart="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/link_created_at"
-                android:layout_marginBottom="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/join_link_button"/>
+                app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/link_created_at">
+
+            <android.support.v7.widget.AppCompatButton
+                    android:text="@string/report"
+                    android:textAllCaps="false"
+                    android:id="@+id/report_link_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:background="@drawable/button_shape"
+                    android:textColor="@color/white"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="16dp"/>
 
 
-        <android.support.v7.widget.AppCompatButton
-                android:text="@string/view_join"
-                android:textAllCaps="false"
-                android:id="@+id/join_link_button"
+            <android.support.v7.widget.AppCompatButton
+                    android:text="@string/view_join"
+                    android:textAllCaps="false"
+                    android:id="@+id/join_link_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:background="@drawable/button_shape"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="20dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"/>
+        </LinearLayout>
+
+
+        <View
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/action_layout2"
+                android:id="@+id/separator"
+                android:background="#000"
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+        <FrameLayout
+                android:id="@+id/adContainer"
+                app:layout_constraintTop_toBottomOf="@+id/separator"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:background="@color/join_link"
-                android:textColor="@color/white"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/link_created_at"/>
-
+                android:layout_marginStart="8dp"
+                android:paddingBottom="16dp">
+        </FrameLayout>
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
